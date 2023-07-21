@@ -17,10 +17,10 @@ export const Tnavigation = () =>{
     return (<>
         <nav>
           <ul className="menu menu-horizontal bg-base-200 rounded-box items-center justify-between w-full">
-            <li className="menu-title">
-              <div className="chat-image avatar">
+            <li className="menu-title ">
+              <div className="chat-image avatar !bg-transparent">
                 <div className="w-12 rounded-full" style={{backgroundColor: "#8cb3ff"}}>
-                  <img src={logo} />
+                  <img src={logo}/>
                 </div>
               </div>
             </li>

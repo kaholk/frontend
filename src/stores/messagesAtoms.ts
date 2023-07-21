@@ -1,7 +1,10 @@
 
 
 import { atom } from 'jotai'
-import { splitAtom } from "jotai/utils"
+// import { splitAtom } from "jotai/utils"
+// import { atomWithStorage } from 'jotai/utils'
+// import {  MainStorage }  from "./MainStorage"
+
 
 import { faker } from '@faker-js/faker';
 
@@ -40,9 +43,11 @@ const chatsMokup = Array(100).fill("").map((_e, idx)=>({
   } satisfies Chat))
 
 
-export const chatsAtom = atom<Chat[]>(chatsMokup)
-export const chatsAtomsAtom = splitAtom(chatsAtom)
 
+// export const xdAtom = atomWithStorage("xd", "", new MainStorage())
+
+export const chatsAtom = atom<Chat[]>(chatsMokup)
+// export const chatsAtom = atomWithStorage<Chat[]>("chats", chatsMokup, new MainStorage())
 
 export const currentChatIdAtom = atom<Number>(chatsMokup[0].id)
 export const currentChatAtom = atom(
@@ -63,3 +68,8 @@ export const sendMessageAtom = atom(
 )
 
 
+
+// type MessageFramgnet = {
+//     type: "text" | "image" 
+//     value: 
+// }

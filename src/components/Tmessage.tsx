@@ -22,6 +22,10 @@ export const Tmessage = ({
     }:TmessageProps ) => {
     const messageClass = messageDirection == "left" ? "chat chat-start" : "chat chat-end";
 
+    // const encodeMessage = () =>{
+    //     const pattern = /(.+)(\[<.+><.+>\])(.+)/u
+    // }
+
     return (<>
         <div className={messageClass}>
             <div className="chat-image avatar">
@@ -32,7 +36,9 @@ export const Tmessage = ({
             <div className="chat-header">
                 <span>{owner}</span> <span className="text-xs opacity-50">{sendDate}</span>
             </div>
-            <div className={`chat-bubble ${ messageDirection == 'right' ? 'bg-primary': ''}`}>{message}</div>
+            <div className={`chat-bubble ${ messageDirection == 'right' ? 'bg-primary': ''}`}>
+                {message}
+            </div>
             <div className="chat-footer opacity-50">
                 {messageStatus}
             </div>

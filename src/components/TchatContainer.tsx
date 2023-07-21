@@ -4,19 +4,20 @@ import { TchatProps, Tchat, TchatOnClickCallback } from "./Tchat"
 import { Components, Virtuoso, ItemProps } from 'react-virtuoso'
 import { Icon } from "@mdi/react"
 import { mdiMagnify, mdiPlus } from "@mdi/js"
-import React from "react"
+import React, { useState } from "react"
 
 
 
 export type CreateNewChatCallback = () => void
 export type SelectChatCallback = TchatOnClickCallback
-
+export type SearchCallback = (value: string) => void
 
 export type TchatContainerProps = {
     chats: TchatProps[];
     currentChatId?: number;
     createNewChatCallback?: CreateNewChatCallback;
     selectChatCallback?: SelectChatCallback;
+    searchCallback?: SearchCallback;
 }
 
 type VirtuosoContext = {
@@ -40,8 +41,16 @@ export const TchatContainer = ({
         chats,
         createNewChatCallback = () => {},
         selectChatCallback = () => {},
+        searchCallback = () => {},
         currentChatId = -1
     }:TchatContainerProps) =>{
+    
+    const [searchValue, setSearchValue] = useState("")
+
+    const catchSearchCallback = (value: string) => {
+        setSearchValue(value)
+        searchCallback(value)
+    }
 
     return(<>
     <div className="flex flex-col grow">
@@ -51,7 +60,13 @@ export const TchatContainer = ({
                     <Icon path={mdiMagnify} size={1}/>
                 </button>
             </span>
-            <input type="text" placeholder="Search" className="input w-full pl-10 bg-base-200" />
+            <input 
+                type="text"
+                placeholder="Search"
+                className="input w-full pl-10 bg-base-200"
+                value={searchValue}
+                onInput={(e)=>catchSearchCallback(e.currentTarget.value)}
+            />
         </div>
         <div className="relative bg-base-200 rounded-xl grow">
             <Virtuoso 

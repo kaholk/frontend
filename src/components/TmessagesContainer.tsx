@@ -2,7 +2,7 @@
 
 import { TmessageProps, Tmessage } from './Tmessage'
 
-import { Virtuoso, VirtuosoHandle } from 'react-virtuoso'
+import { Virtuoso, VirtuosoHandle, Components } from 'react-virtuoso'
 
 import { Icon } from "@mdi/react"
 import { mdiDotsVertical, mdiSend, mdiArrowDown } from "@mdi/js"
@@ -11,12 +11,18 @@ import { useEffect, useRef, useState } from "react"
 
 export type SendMessageCallback =  (message: string) => void
 
-
 export type TmessagesContainerProps = {
     messages?: TmessageProps[];
     chatName?: string;
     avatarUrl?: string;
     sendMessageCallback?: SendMessageCallback
+}
+
+
+const VirtuosoCustomHeader:Components['Header'] = () =>{
+    return(<>
+    <span className="loading loading-spinner loading-md m-auto block"/>
+    </>)
 }
 
 export const TmessagesContainer = ({
@@ -49,6 +55,12 @@ export const TmessagesContainer = ({
             setShowScrollButton(false)
         }
     }, [atBottom, setShowScrollButton])
+
+    useEffect(()=>{
+        if (virtuosoRef.current == null) return;
+        virtuosoRef.current.scrollToIndex({ index: messages.length - 1, behavior: 'auto' })
+        setShowScrollButton(false)
+    },[messages])
     
     const onSendButtonPress = () =>{
         sendMessageCallback(newMessage);
@@ -90,9 +102,12 @@ export const TmessagesContainer = ({
                 className='no-scrollbar'
                 totalCount={messages.length}
                 data={messages}
-                initialTopMostItemIndex={messages.length-1}
+                // initialTopMostItemIndex={messages.length-1}
                 atBottomStateChange={(bottom)=>{
                     setAtBottom(bottom)
+                }}
+                components={{
+                    Header: VirtuosoCustomHeader
                 }}
                 ref={virtuosoRef}
                 followOutput={'auto'}
