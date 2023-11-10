@@ -42,7 +42,9 @@ export const ChatsPage = () =>{
 
     const [newChatPayload, setNewChatPayload] = useState<CreateChatPayload>(initialCreateChatPayload)
 
-
+    const [newChatModal, setNewChatModal] = useState(false)
+    const [ChatSettingsModal, setChatSettingsModal] = useState(false)
+    const [invitesAcceptModal, setInvitesAcceptModal] = useState(false)
 
     const fetchUserChats = async () =>{
         if(currentUser == null) return;
@@ -111,7 +113,7 @@ export const ChatsPage = () =>{
 
 
 
-    const [newChatModal, setNewChatModal] = useState(false)
+    
 
     const sendNewMessage:SendMessageCallback = async (newMessage) =>{
         console.log(newMessage)
@@ -157,14 +159,16 @@ export const ChatsPage = () =>{
     }
 
     return (<>
+    <button className="btn btn-md btn-circle btn-ghost absolute right-2 top-2" onClick={() => setInvitesAcceptModal(true)}>invites</button>
     <div className="flex flex-row justify-between p-4 h-full">
         <div className="flex flex-col h-full w-1/3 mr-4">
             <Tnavigation />
             <br />
             <TchatContainer chats={currentUserChats} currentChatId={0} createNewChatCallback={()=>setNewChatModal(true)} selectChatCallback={onSelectChat} searchCallback={searchChats}/>
+            
         </div>
         <div className="flex flex-col h-full grow">
-            <TmessagesContainer messages={currentChatMessages} /*avatarUrl={currentChat?.avatarUrl}*/ chatName={currentChatDetails?.name} sendMessageCallback={sendNewMessage}/>
+            <TmessagesContainer messages={currentChatMessages} /*avatarUrl={currentChat?.avatarUrl}*/ chatName={currentChatDetails?.name} sendMessageCallback={sendNewMessage} clickChatSettingsCallback={()=>setChatSettingsModal(true)}/>
         </div>
         <dialog className={`modal ${newChatModal ? "modal-open" : "" }`}>
             <div className="modal-box w-11/12 max-w-3xl">
@@ -206,6 +210,49 @@ export const ChatsPage = () =>{
                 </div>
             </div>
         </dialog>
+
+        <dialog className={`modal ${ChatSettingsModal ? "modal-open" : "" }`}>
+            <div className="modal-box w-11/12 max-w-3xl">
+                <button className="btn btn-md btn-circle btn-ghost absolute right-2 top-2" onClick={() => setChatSettingsModal(false)}>X</button>
+                <h3 className="font-bold text-lg">Ustawienia Czatu</h3>
+                <div className="divider" />
+                <div className="ml-8">
+                    <div>
+                        Chat members
+                        {currentChatDetails?.chatMembers.map(friend=><>
+
+                        </>)}
+                    </div>
+                    <div className="divider" />
+                    <div>
+                        <p>Chat members to delete</p>
+                    
+
+                    </div>
+                </div>
+            </div>
+        </dialog>
+
+        <dialog className={`modal ${invitesAcceptModal ? "modal-open" : "" }`}>
+            <div className="modal-box w-11/12 max-w-3xl">
+                <button className="btn btn-md btn-circle btn-ghost absolute right-2 top-2" onClick={() => setInvitesAcceptModal(false)}>X</button>
+                <h3>Invites</h3>
+                {
+                    currentUserFriendsInviteList.length > 0 
+                    ? <div>
+                        {currentUserFriendsInviteList.map(invite=><>
+                            <div key={invite.friendId}>
+                                <p>{invite.firstName}{invite.lastName}</p>
+                            </div>
+                        </>)}
+                    </div>
+                    :<div>
+                        Obecnie nie masz rzadnych zaproszeń
+                    </div>
+                }
+            </div>
+        </dialog>
+
     </div>
     
     </>)

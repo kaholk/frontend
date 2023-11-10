@@ -16,6 +16,7 @@ export type TmessagesContainerProps = {
     chatName?: string;
     avatarUrl?: string;
     sendMessageCallback?: SendMessageCallback
+    clickChatSettingsCallback?: () => void
 }
 
 
@@ -29,7 +30,8 @@ export const TmessagesContainer = ({
         messages = [],
         chatName = "",
         avatarUrl = "",
-        sendMessageCallback = () => {}
+        sendMessageCallback = () => {},
+        clickChatSettingsCallback = () =>{},
     }:TmessagesContainerProps) =>{
 
     const [newMessage, setNewMessage] = useState("")
@@ -86,14 +88,10 @@ export const TmessagesContainer = ({
                     </div>
                 </div>
             </div>
-            <div className="dropdown dropdown-end">
+            <div className="dropdown dropdown-end" onClick={clickChatSettingsCallback}>
                 <label tabIndex={0} className="btn btn-ghost btn-circle">
                     <Icon path={mdiDotsVertical} size={1}/>
                 </label>
-                <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                    <li><a>Item 1</a></li>
-                    <li><a>Item 2</a></li>
-                </ul>
             </div>
         </div>
         <div className="divider"/>
