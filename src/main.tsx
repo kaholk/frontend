@@ -27,6 +27,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
             <Route index element={ <HomePage/> } />
             <Route path='helpers' element={ <HelpersPage/> } />
             <Route path='chats' element={ <ChatsPage/> } />
+            <Route path='friends' element={ <ChatsPage/> } />
             <Route path='test' element={ <TestPage/> } />
             <Route path='register' element={ <RegisterPage/> } />
             <Route path='*' element={ <NotFoundPAge/> } />

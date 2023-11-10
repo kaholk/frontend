@@ -12,8 +12,9 @@ import {
 
 import logo from "../assets/favicon.ico"
 
-export const Tnavigation = () =>{
 
+
+export const Tnavigation = () =>{
     return (<>
         <nav>
           <ul className="menu menu-horizontal bg-base-200 rounded-box items-center justify-between w-full">
@@ -50,7 +51,7 @@ export const Tnavigation = () =>{
             </li>
             <li>
               <NavLink 
-                to="/helpers" className="tooltip" data-tip="Helpers" 
+                to="/helpers" className="tooltip" data-tip="Helpers"
                 children={ ({ isActive }) => <Icon path={mdiHelp} size={1.5} className={ isActive ? "text-primary" : 'text-base-content'}/> }
               />
             </li>

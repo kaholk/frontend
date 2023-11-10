@@ -4,6 +4,7 @@
 import { TmessagesContainer, SendMessageCallback } from "../components/TmessagesContainer"
 import { TchatContainer, CreateNewChatCallback, SelectChatCallback, SearchCallback } from "../components/TchatContainer"
 import { Tnavigation } from "../components/Tnavigation"
+import { TfriendsContainer } from "../components/TfriendsContainer"
 
 import { useNavigate } from "react-router-dom"
 import { useEffect, useState } from "react";
@@ -31,6 +32,8 @@ import { createChat, CreateChatPayload, initialCreateChatPayload } from "../api/
 
 export const ChatsPage = () =>{
     const navigate = useNavigate()
+    const currentURL = window.location.pathname
+
     const [currentUser, setCurrentUser] = useAtom(currentUserAtom)
     const [currentUserChats, setCurrentUserChats] = useAtom(cureentUserChatsAtom)
 
@@ -169,13 +172,24 @@ export const ChatsPage = () =>{
         console.log(value)
     }
 
+    const MenuIemClickCallback = (itemName: string) =>{
+
+    }
+
     return (<>
     <button className="btn btn-md btn-circle btn-ghost absolute right-2 top-2" onClick={() => setInvitesAcceptModal(true)}>invites</button>
     <div className="flex flex-row justify-between p-4 h-full">
         <div className="flex flex-col h-full w-1/3 mr-4">
-            <Tnavigation />
+            <Tnavigation/>
             <br />
+            {
+            currentURL == "/chats" &&
             <TchatContainer chats={currentUserChats} currentChatId={0} createNewChatCallback={()=>setNewChatModal(true)} selectChatCallback={onSelectChat} searchCallback={searchChats}/>
+            }
+            {
+                currentURL == "/friends" &&
+                <TfriendsContainer />
+            }
             
         </div>
         <div className="flex flex-col h-full grow">
