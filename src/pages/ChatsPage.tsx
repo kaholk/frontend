@@ -94,6 +94,17 @@ export const ChatsPage = () =>{
         if(resoultMessages.status){
             setCurrentChatMessages(resoultMessages.data)
         }
+    }
+
+    const fetchDeleteUser = async (userId:number) => {
+
+    }
+
+    const fetchAcceptInvite = async (userId:number) =>{
+
+    }
+
+    const fetchRejectInvite = async (userId:number) =>{
 
     }
 
@@ -217,17 +228,14 @@ export const ChatsPage = () =>{
                 <h3 className="font-bold text-lg">Ustawienia Czatu</h3>
                 <div className="divider" />
                 <div className="ml-8">
+                    Chat members
                     <div>
-                        Chat members
                         {currentChatDetails?.chatMembers.map(friend=><>
-
+                        <div>
+                            {friend.nickname}
+                            <button onClick={()=>fetchDeleteUser(friend.userId)}>Usuń z czatu</button>
+                        </div>
                         </>)}
-                    </div>
-                    <div className="divider" />
-                    <div>
-                        <p>Chat members to delete</p>
-                    
-
                     </div>
                 </div>
             </div>
@@ -236,17 +244,19 @@ export const ChatsPage = () =>{
         <dialog className={`modal ${invitesAcceptModal ? "modal-open" : "" }`}>
             <div className="modal-box w-11/12 max-w-3xl">
                 <button className="btn btn-md btn-circle btn-ghost absolute right-2 top-2" onClick={() => setInvitesAcceptModal(false)}>X</button>
-                <h3>Invites</h3>
+                <h3>Zaproszenia</h3>
                 {
                     currentUserFriendsInviteList.length > 0 
                     ? <div>
                         {currentUserFriendsInviteList.map(invite=><>
                             <div key={invite.friendId}>
                                 <p>{invite.firstName}{invite.lastName}</p>
+                                <button onClick={()=>fetchAcceptInvite(invite.friendId)}>Akceptuj zaproszenie</button>
+                                <button onClick={()=>fetchRejectInvite(invite.friendId)}>Odrzuć zaproszenie</button>
                             </div>
                         </>)}
                     </div>
-                    :<div>
+                    :<div className="text-2xl">
                         Obecnie nie masz rzadnych zaproszeń
                     </div>
                 }
