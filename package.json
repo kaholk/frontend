@@ -10,16 +10,22 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.1",
     "@mdi/js": "^7.2.96",
     "@mdi/react": "^1.6.1",
+    "axios": "^1.5.1",
     "jotai": "^2.2.2",
+    "jotai-devtools": "^0.6.3",
     "localforage": "^1.10.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-lazily": "^0.9.2",
     "react-virtuoso": "^4.4.0"
   },
   "devDependencies": {
     "@faker-js/faker": "^8.0.2",
+    "@swc-jotai/debug-label": "^0.1.0",
+    "@swc-jotai/react-refresh": "^0.1.0",
     "@types/node": "^20.4.2",
     "@types/react": "^18.2.14",
     "@types/react-dom": "^18.2.6",

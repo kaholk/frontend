@@ -1,7 +1,53 @@
+
 import { useNavigate } from "react-router-dom"
+import { useState } from "react";
+import { useAtom } from "jotai"
+
+import { LoginPayload, initialLoginPayload, LoginRequestResponseError, userLogin} from "./../api/user/loginUser"
+import { RequestStatus, RequestBaseError, RequestResponseError } from "../api/axios"
+
+import { 
+    currentUserAtom, 
+    // cureentUserChatsAtom, 
+    // currentChatDetailsAtom, 
+    // currentChatIdAtom, 
+    // currentChatMessagesAtom 
+} from "../stores/currentUserAtoms"
 
 export const HomePage = () =>{
-    const navigate = useNavigate();
+    const navigate = useNavigate()
+
+    const [loginPayload, setLoginPayload] = useState<LoginPayload>(initialLoginPayload)
+    const [loginStatus, setloginStatus] = useState<RequestStatus>(RequestStatus.Idle);
+    const [loginResponeError, setLoginResponeError] = useState<RequestResponseError<LoginRequestResponseError>>(null)
+    const [loginBaseError, setLoginBaseError] = useState<RequestBaseError>(null)
+    const [currentUser, setCurrentUser] = useAtom(currentUserAtom)
+
+
+    const loginValuesHook = (param:{namme:string, value:string}) => {
+        setLoginPayload({
+            email: param.namme == "email" ? param.value : loginPayload.email,
+            password:  param.namme == "password" ? param.value : loginPayload.password,
+        });
+    }
+
+    const loginHook = async () =>{
+        setLoginResponeError(null);
+        setLoginBaseError(null);
+
+        const resoult = await userLogin(loginPayload, setloginStatus)
+        if(resoult.status == false){
+            setLoginResponeError(resoult.responseError);
+            setLoginBaseError(resoult.baseError);
+            return;
+        }
+        setCurrentUser(resoult.data)
+
+
+
+        navigate("chats")
+        
+    }
 
     return(<>
         <div className="hero min-h-screen bg-base-200">
@@ -16,23 +62,27 @@ export const HomePage = () =>{
                             <label className="label">
                                 <span className="label-text">Email</span>
                             </label>
-                            <input type="text" placeholder="email" className="input input-bordered" />
+                            <input type="text" placeholder="email" className="input input-bordered" value={loginPayload.email} onChange={(e)=>loginValuesHook({namme: "email", value: e.target.value})}/>
+                            {loginResponeError?.message.email}
                         </div>
                         <div className="form-control">
                             <label className="label">
                                 <span className="label-text">Password</span>
                             </label>
-                            <input type="text" placeholder="password" className="input input-bordered" />
+                            <input type="password" placeholder="password" className="input input-bordered" value={loginPayload.password} onChange={(e)=>loginValuesHook({namme: "password", value: e.target.value})}/>
+                            {loginResponeError?.message.password}
                             <label className="label">
                                 <a href="#" className="label-text-alt link link-hover">Forgot password?</a>
                             </label>
                         </div>
                         <div className="form-control mt-6">
-                            <button className="btn btn-primary" onClick={()=>navigate("chats")}>Login</button>
+                            <button className="btn btn-primary" onClick={()=>loginHook()}>Login</button>
+                            {loginStatus}
+                            {loginBaseError}
                             <label className="label label-text-alt">
                                 <span>
                                     <span>Do not have accout ? </span>
-                                    <a href="#" className="link link-hover">Register now</a>
+                                    <a href="#" className="link link-hover" onClick={()=>navigate("register")}>Register now</a>
                                 </span>
                             </label>
                         </div>
