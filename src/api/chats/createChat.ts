@@ -1,11 +1,12 @@
 
 import { apiPost, RequestStatusHook} from "../axios"
+import { Chat } from "../types"
 
 
 export type CreateChatPayload = {
-    name: string,
-    chatMembers: number[]
-}
+    name?: string;
+    chatMembers: number[];
+} 
 
 export type CreateChatRequestResponseError = {
 
@@ -14,12 +15,6 @@ export type CreateChatRequestResponseError = {
 export const initialCreateChatPayload: CreateChatPayload = {
     name: "",
     chatMembers: []
-}
-
-
-
-export type Chat = {
-
 }
 
 export const createChat = async (payload: CreateChatPayload = initialCreateChatPayload, requestStatusHook?: RequestStatusHook) => {

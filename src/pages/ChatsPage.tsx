@@ -27,7 +27,7 @@ import { getChatDetails } from "../api/chats/getChatDetails"
 import { sendMessage } from "../api/messages/sendMessage"
 import { getFriendsList } from "../api/friends/getFriendsList"
 import { getFirendsInvitesList } from "../api/friends/getFriendsInvitesList"
-import { CreateChatPayload, initialCreateChatPayload } from "../api/chats/createChat"
+import { createChat, CreateChatPayload, initialCreateChatPayload } from "../api/chats/createChat"
 
 export const ChatsPage = () =>{
     const navigate = useNavigate()
@@ -130,15 +130,26 @@ export const ChatsPage = () =>{
 
     }
 
+    const createNewChat = async () =>{
+        if(newChatPayload.name == ""){
+            setNewChatPayload(current => {
+                const {name, ...rest} = current
+                return rest
+            })
+        }
+        const resoult = await createChat(newChatPayload)
+
+        if(resoult.status){
+            setCurrentUserChats([...currentUserChats, resoult.data])
+        }
+    }
+
+
     const onSelectChat:SelectChatCallback = async (chatId) =>{
         if(currentChatId == chatId) return;
         setCurrentChatId(chatId);
         fetchCurrentChatDetails();
         fetchCurrentChatMessages();
-    }
-
-    const createNewChat:CreateNewChatCallback = () =>{
-        setNewChatModal(true)
     }
 
     const searchChats:SearchCallback = (value) =>{
@@ -150,7 +161,7 @@ export const ChatsPage = () =>{
         <div className="flex flex-col h-full w-1/3 mr-4">
             <Tnavigation />
             <br />
-            <TchatContainer chats={currentUserChats} currentChatId={0} createNewChatCallback={createNewChat} selectChatCallback={onSelectChat} searchCallback={searchChats}/>
+            <TchatContainer chats={currentUserChats} currentChatId={0} createNewChatCallback={()=>setNewChatModal(true)} selectChatCallback={onSelectChat} searchCallback={searchChats}/>
         </div>
         <div className="flex flex-col h-full grow">
             <TmessagesContainer messages={currentChatMessages} /*avatarUrl={currentChat?.avatarUrl}*/ chatName={currentChatDetails?.name} sendMessageCallback={sendNewMessage}/>
@@ -161,7 +172,7 @@ export const ChatsPage = () =>{
                 <h3 className="font-bold text-lg">Create New Chat!</h3>
                 <div className="divider" />
                 <div>
-                    <input type="text" placeholder="chat name" className="input input-bordered input-primary w-full" />
+                    <input type="text" placeholder="chat name" className="input input-bordered input-primary w-full" onInput={(e)=> setNewChatPayload({...newChatPayload, name: e.currentTarget.value})} />
                 </div>
                 <div className="divider" />
                 <div>
@@ -191,7 +202,7 @@ export const ChatsPage = () =>{
                 </div>
                 <div className="divider" />
                 <div className="modal-action">
-                    <button className="btn btn-primary rounded-xl">Create new chat</button>
+                    <button className="btn btn-primary rounded-xl" onClick={()=>createNewChat()}>Create new chat</button>
                 </div>
             </div>
         </dialog>
