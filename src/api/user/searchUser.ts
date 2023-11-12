@@ -1,5 +1,5 @@
 
-import { apiGet, RequestStatusHook } from "../axios";
+import { apiCall, ApiCallType, RequestStatusHook } from "../axios";
 import { User } from "../types"
 
 /*Types*/
@@ -19,5 +19,5 @@ const initialSearchUsersPayload:SearchUsersPayload = {
 /*Methods*/
 export const searchUsers = async (payload:SearchUsersPayload = initialSearchUsersPayload, requestStatusHook?: RequestStatusHook)=> {
     const url = `/user/find/${payload.keyword}`
-    return apiGet<User[], SearchUsersRequestResponseError>(url, requestStatusHook)
+    return apiCall<undefined, User[], SearchUsersRequestResponseError>(ApiCallType.GET, url, undefined, requestStatusHook)
 }

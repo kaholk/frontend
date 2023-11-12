@@ -1,7 +1,7 @@
 
 
 
-import { apiPost, RequestStatusHook } from "../axios"
+import { apiCall, ApiCallType, RequestStatusHook } from "../axios"
 import { Friend } from "../types"
 
 
@@ -21,5 +21,5 @@ export const initialAcceptInvitePayload: AcceptInvitePayload = {
 }
 
 export const acceptInvite = async (payload: AcceptInvitePayload = initialAcceptInvitePayload, requestStatusHook?: RequestStatusHook) =>{
-    return apiPost<AcceptInvitePayload, Friend, AcceptInviteRequestResponseError>("friend/accept", payload, requestStatusHook)
+    return apiCall<AcceptInvitePayload, Friend, AcceptInviteRequestResponseError>(ApiCallType.POST, "friend/accept", payload, requestStatusHook)
 }

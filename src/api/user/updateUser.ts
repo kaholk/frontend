@@ -1,5 +1,5 @@
 
-import { apiPatch, RequestStatusHook} from "../axios"
+import { apiCall, ApiCallType, RequestStatusHook} from "../axios"
 import { User } from "../types"
 
 /*Types*/
@@ -22,5 +22,5 @@ export const initialUserUpdatePayload:UpdateUserPayload = {
 } 
 
 export const updateUser = async (payload: UpdateUserPayload, requestStatusHook?: RequestStatusHook) =>{
-    return apiPatch<UpdateUserPayload, User, UpdateUserRequestResponseError>("/user", payload, requestStatusHook)
+    return apiCall<UpdateUserPayload, User, UpdateUserRequestResponseError>(ApiCallType.PATCH, "/user", payload, requestStatusHook)
 }

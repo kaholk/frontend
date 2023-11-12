@@ -2,7 +2,7 @@
 
 
 
-import { RequestStatusHook, apiGet } from "../axios"
+import { apiCall, ApiCallType, RequestStatusHook } from "../axios"
 import { Chat } from "../types"
 
 export type GetUserChatsPayload = {
@@ -19,5 +19,5 @@ export const initalGetUserChatsPayload:GetUserChatsPayload = {
 
 export const getUserChats = async (payload: GetUserChatsPayload = initalGetUserChatsPayload, requestStatusHook?: RequestStatusHook) =>{
     const url = `/chat/${payload.id}`
-    return apiGet<Chat[], GetUserChatsRequestResponseError>(url, requestStatusHook)
+    return apiCall<undefined, Chat[], GetUserChatsRequestResponseError>(ApiCallType.GET, url, undefined, requestStatusHook)
 }

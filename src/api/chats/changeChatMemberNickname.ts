@@ -1,6 +1,6 @@
 
 
-import { apiPatch, RequestStatusHook} from "../axios"
+import { apiCall, ApiCallType, RequestStatusHook} from "../axios"
 
 
 export type ChangeChatMemberNicknamePayload = {
@@ -26,5 +26,5 @@ type ResponseType ={
 }
 
 export const changeChatMemberNickname = async (payload: ChangeChatMemberNicknamePayload = initialChangeChatMemberNicknamePayload, requestStatusHook?: RequestStatusHook) =>{
-    return apiPatch<ChangeChatMemberNicknamePayload, ResponseType, ChangeChatMemberNicknameRequestResponseError>("/chat/changeNickname", payload, requestStatusHook)
+    return apiCall<ChangeChatMemberNicknamePayload, ResponseType, ChangeChatMemberNicknameRequestResponseError>(ApiCallType.PATCH, "/chat/changeNickname", payload, requestStatusHook)
 }

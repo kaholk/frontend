@@ -1,6 +1,6 @@
 
 
-import { apiPost, RequestStatusHook } from "../axios"
+import { apiCall, ApiCallType, RequestStatusHook } from "../axios"
 
 
 export type SendMessagePayload = {
@@ -22,5 +22,5 @@ export type SendMessageRequestResponseError = {
 export type ResponseType = unknown
 
 export const sendMessage = async (payload: SendMessagePayload = initialSendMessagePayload, requestStatusHook?: RequestStatusHook) =>{
-    return apiPost<SendMessagePayload, ResponseType, SendMessageRequestResponseError>("/message", payload, requestStatusHook)
+    return apiCall<SendMessagePayload, ResponseType, SendMessageRequestResponseError>(ApiCallType.POST, "/message", payload, requestStatusHook)
 }

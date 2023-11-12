@@ -29,6 +29,7 @@ import { sendMessage } from "../api/messages/sendMessage"
 import { getFriendsList } from "../api/friends/getFriendsList"
 import { getFirendsInvitesList } from "../api/friends/getFriendsInvitesList"
 import { createChat, CreateChatPayload, initialCreateChatPayload } from "../api/chats/createChat"
+import { deleteChatMember } from "../api/chats/deleteChatMember"
 
 export const ChatsPage = () =>{
     const navigate = useNavigate()
@@ -99,8 +100,8 @@ export const ChatsPage = () =>{
         }
     }
 
-    const fetchDeleteUser = async (userId:number) => {
-
+    const fetchDeleteUser = async (chatId:number, userId:number) => {
+        const resoult = await deleteChatMember({chatId: chatId, userId: userId})
     }
 
     const fetchAcceptInvite = async (userId:number) =>{
@@ -245,10 +246,19 @@ export const ChatsPage = () =>{
                     Chat members
                     <div>
                         {currentChatDetails?.chatMembers.map(friend=><>
-                        <div>
-                            {friend.nickname}
-                            <button onClick={()=>fetchDeleteUser(friend.userId)}>Usuń z czatu</button>
+                        <div className="my-1">
+                            <span>{friend.nickname}</span>
+                            <button className="btn btn-sm btn-outline btn-primary ml-2" onClick={()=>fetchDeleteUser(currentChatDetails.id, friend.userId)}>Usuń z czatu</button>
                         </div>
+                        </>)}
+                    </div>
+                    <div className="divider" />
+                    <div>
+                        {currentUserFriendsList.map(friend=><>
+                            <div>
+                                <span>{friend.firstName} {friend.lastName}</span>
+                                <button className="btn btn-sm btn-outline btn-primary ml-2">Dodaj do czatu</button>
+                            </div>
                         </>)}
                     </div>
                 </div>

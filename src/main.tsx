@@ -19,7 +19,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <StrictMode>
     {/* style={{position: "absolute", zIndex: "9999", right: 0, bottom: 0, width: "900px", height: "800px", transform: "translate3d(0px, 0px, 0px)"}} */}
     <div >
-      <DevTools theme='dark' isInitialOpen/>
+      <DevTools theme='dark'/>
     </div>
       <BrowserRouter>
         <Routes>

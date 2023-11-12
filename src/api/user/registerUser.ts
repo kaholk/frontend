@@ -1,5 +1,5 @@
 
-import { apiPost, RequestStatusHook} from "../axios"
+import { apiCall, ApiCallType, RequestStatusHook} from "../axios"
 import { User } from "../types"
 
 
@@ -38,5 +38,5 @@ export const initialRegisterPayload:RegisterPayload = {
 } 
 
 export const registerUser = async (payload: RegisterPayload = initialRegisterPayload, requestStatusHook?: RequestStatusHook) =>{
-    return apiPost<RegisterPayload, User, RegisterRequestResponseError>("/user", payload, requestStatusHook)
+    return apiCall<RegisterPayload, User, RegisterRequestResponseError>(ApiCallType.POST, "/user", payload, requestStatusHook)
 }

@@ -1,6 +1,6 @@
 
 
-import { apiGet, RequestStatusHook } from "../axios"
+import { apiCall, ApiCallType, RequestStatusHook } from "../axios"
 import { Friend } from "../types"
 
 /*Types*/
@@ -21,5 +21,5 @@ export const initialGetFirendsInvitesListPayload:GetFirendsInvitesListPayload = 
 
 export const getFirendsInvitesList = async (payload: GetFirendsInvitesListPayload = initialGetFirendsInvitesListPayload, requestStatusHook?: RequestStatusHook) =>{
     const url = `/friend/${payload.id}/invites`
-    return apiGet<Friend[], GetFirendsInvitesListRequestResponseError>(url, requestStatusHook)
+    return apiCall<undefined, Friend[], GetFirendsInvitesListRequestResponseError>(ApiCallType.GET, url, undefined, requestStatusHook)
 }

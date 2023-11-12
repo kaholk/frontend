@@ -1,6 +1,6 @@
 
 
-import { apiGet, RequestStatusHook } from "../axios"
+import { apiCall, ApiCallType, RequestStatusHook } from "../axios"
 import { Message } from "../types"
 
 export type GetMessagesPayload = {
@@ -17,5 +17,5 @@ export type GetMessagesRequestResponseError = {
 
 export const getMessages = async (payload: GetMessagesPayload = initialGetMessagesPayload, requestStatusHook?: RequestStatusHook) =>{
     const url = `/message/${payload.id}`
-    return apiGet<Message[], GetMessagesRequestResponseError>(url, requestStatusHook)
+    return apiCall<undefined, Message[], GetMessagesRequestResponseError>(ApiCallType.GET, url, undefined, requestStatusHook)
 }
