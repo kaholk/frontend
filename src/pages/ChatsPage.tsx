@@ -5,6 +5,7 @@ import { TmessagesContainer, SendMessageCallback } from "../components/Tmessages
 import { TchatContainer, CreateNewChatCallback, SelectChatCallback, SearchCallback } from "../components/TchatContainer"
 import { Tnavigation } from "../components/Tnavigation"
 import { TfriendsContainer } from "../components/TfriendsContainer"
+import { TchatSettingsModal } from "../components/TchatSettingsModal"
 
 import { useNavigate } from "react-router-dom"
 import { useEffect, useState } from "react";
@@ -47,7 +48,7 @@ export const ChatsPage = () =>{
     const [newChatPayload, setNewChatPayload] = useState<CreateChatPayload>(initialCreateChatPayload)
 
     const [newChatModal, setNewChatModal] = useState(false)
-    const [ChatSettingsModal, setChatSettingsModal] = useState(false)
+    const [chatSettingsModal, setChatSettingsModal] = useState(false)
     const [invitesAcceptModal, setInvitesAcceptModal] = useState(false)
 
     const fetchUserChats = async () =>{
@@ -123,12 +124,10 @@ export const ChatsPage = () =>{
     }, [])
 
     useEffect(()=>{
-        // getMessages({id: })
+        if(currentChatId != null)
+            fetchCurrentChatDetails()
     },[currentChatId])
 
-
-
-    
 
     const sendNewMessage:SendMessageCallback = async (newMessage) =>{
         console.log(newMessage)
@@ -237,33 +236,7 @@ export const ChatsPage = () =>{
             </div>
         </dialog>
 
-        <dialog className={`modal ${ChatSettingsModal ? "modal-open" : "" }`}>
-            <div className="modal-box w-11/12 max-w-3xl">
-                <button className="btn btn-md btn-circle btn-ghost absolute right-2 top-2" onClick={() => setChatSettingsModal(false)}>X</button>
-                <h3 className="font-bold text-lg">Ustawienia Czatu</h3>
-                <div className="divider" />
-                <div className="ml-8">
-                    Chat members
-                    <div>
-                        {currentChatDetails?.chatMembers.map(friend=><>
-                        <div className="my-1">
-                            <span>{friend.nickname}</span>
-                            <button className="btn btn-sm btn-outline btn-primary ml-2" onClick={()=>fetchDeleteUser(currentChatDetails.id, friend.userId)}>Usuń z czatu</button>
-                        </div>
-                        </>)}
-                    </div>
-                    <div className="divider" />
-                    <div>
-                        {currentUserFriendsList.map(friend=><>
-                            <div>
-                                <span>{friend.firstName} {friend.lastName}</span>
-                                <button className="btn btn-sm btn-outline btn-primary ml-2">Dodaj do czatu</button>
-                            </div>
-                        </>)}
-                    </div>
-                </div>
-            </div>
-        </dialog>
+        <TchatSettingsModal isOpen={chatSettingsModal} closeCallback={()=>setChatSettingsModal(false)}/>
 
         <dialog className={`modal ${invitesAcceptModal ? "modal-open" : "" }`}>
             <div className="modal-box w-11/12 max-w-3xl">
