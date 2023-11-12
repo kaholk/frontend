@@ -60,7 +60,7 @@ export const TfriendsContainer = () =>{
                         Zaproszenia do znjamoych:
                         {currentUserFriendsInviteList.map(friend=><>
                             <div>
-                                <span>{friend.firstName}{friend.lastName}</span>
+                                <span>{friend.firstName}{friend.lastName}({friend.friendId})</span>
                                 <button className="btn btn-sm btn-outline btn-primary ml-2">Zatwierdź</button>
                                 <button className="btn btn-sm btn-outline btn-primary ml-2">Odrzuć</button>
                             </div>
@@ -71,7 +71,7 @@ export const TfriendsContainer = () =>{
                     Twoi znajomi:
                     {currentUserFriendsList.map(firend=><>
                     <div>
-                        <span>{firend.firstName}{firend.lastName}</span>
+                        <span>{firend.firstName}{firend.lastName}({firend.friendId})</span>
                         <button className="btn btn-sm btn-outline btn-primary ml-2">usun ze znajomych</button>
                     </div>
                     </>)}
@@ -84,7 +84,7 @@ export const TfriendsContainer = () =>{
                     : <>
                         {searchUserList.map(user=><>
                         <div>
-                            <span>{user.firstName} {user.lastName}</span>
+                            <span>{user.firstName}{user.lastName}({user.id})</span>
                             <button className="btn btn-sm btn-outline btn-primary ml-2">dodaj do znajomych</button>
                         </div>
                         </>)}

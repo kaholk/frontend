@@ -1,7 +1,7 @@
 
 
 import { RequestStatusHook, apiCall, ApiCallType } from "../axios"
-
+import { ChatMember } from "../types"
 
 export type DeleteChatMemberPayload = {
     chatId: number,
@@ -17,5 +17,5 @@ export type DeleteChatMemberRequestResponseError = string
 
 
 export const deleteChatMember = async (payload: DeleteChatMemberPayload = initialDeleteChatMemberPayload, requestStatusHook?: RequestStatusHook) =>{
-    return apiCall(ApiCallType.DELETE, "/chat/delMember", payload, requestStatusHook)
+    return apiCall<DeleteChatMemberPayload, ChatMember[], DeleteChatMemberRequestResponseError>(ApiCallType.DELETE, "/chat/delMember", payload, requestStatusHook)
 }

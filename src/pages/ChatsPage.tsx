@@ -147,13 +147,22 @@ export const ChatsPage = () =>{
     }
 
     const createNewChat = async () =>{
+        if(currentUser == null) return;
+
         if(newChatPayload.name == ""){
             setNewChatPayload(current => {
                 const {name, ...rest} = current
                 return rest
             })
         }
-        const resoult = await createChat(newChatPayload)
+
+        console.log(newChatPayload.chatMembers)
+        const payload = {
+            ...newChatPayload,
+            chatMembers: [...newChatPayload.chatMembers, currentUser.id]
+        }
+
+        const resoult = await createChat(payload)
 
         if(resoult.status){
             setCurrentUserChats([...currentUserChats, resoult.data])
@@ -177,7 +186,6 @@ export const ChatsPage = () =>{
     }
 
     return (<>
-    <button className="btn btn-md btn-circle btn-ghost absolute right-2 top-2" onClick={() => setInvitesAcceptModal(true)}>invites</button>
     <div className="flex flex-row justify-between p-4 h-full">
         <div className="flex flex-col h-full w-1/3 mr-4">
             <Tnavigation/>
@@ -201,11 +209,15 @@ export const ChatsPage = () =>{
                 <h3 className="font-bold text-lg">Create New Chat!</h3>
                 <div className="divider" />
                 <div>
-                    <input type="text" placeholder="chat name" className="input input-bordered input-primary w-full" onInput={(e)=> setNewChatPayload({...newChatPayload, name: e.currentTarget.value})} />
+                    {
+                        newChatPayload.chatMembers.length > 1 &&
+                        <input type="text" placeholder="chat name" className="input input-bordered input-primary w-full" onInput={(e)=> setNewChatPayload({...newChatPayload, name: e.currentTarget.value})} />
+                    }
                 </div>
                 <div className="divider" />
                 <div>
                     <p>Chat members</p>
+                    {currentUser?.firstName} {currentUser?.lastName} (Ty)
                     {currentUserFriendsList.filter(e=> newChatPayload.chatMembers.some(ee=>ee == e.friendId)).map(firend=> <>
                         <div key={firend.friendId}>
                             {firend.firstName} {firend.lastName}
@@ -221,7 +233,7 @@ export const ChatsPage = () =>{
                     <p>Users</p>
                     {currentUserFriendsList.filter(e=> newChatPayload.chatMembers.every(ee=>ee != e.friendId)).map(firend=> <>
                         <div key={firend.friendId}>
-                            {firend.firstName} {firend.lastName}
+                            {firend.firstName} {firend.lastName} ({firend.friendId})
                             <button className="btn btn-sm btn-primary" onClick={()=> setNewChatPayload({
                                 ...newChatPayload,
                                 chatMembers: [...newChatPayload.chatMembers, firend.friendId]
@@ -237,29 +249,6 @@ export const ChatsPage = () =>{
         </dialog>
 
         <TchatSettingsModal isOpen={chatSettingsModal} closeCallback={()=>setChatSettingsModal(false)}/>
-
-        <dialog className={`modal ${invitesAcceptModal ? "modal-open" : "" }`}>
-            <div className="modal-box w-11/12 max-w-3xl">
-                <button className="btn btn-md btn-circle btn-ghost absolute right-2 top-2" onClick={() => setInvitesAcceptModal(false)}>X</button>
-                <h3>Zaproszenia</h3>
-                {
-                    currentUserFriendsInviteList.length > 0 
-                    ? <div>
-                        {currentUserFriendsInviteList.map(invite=><>
-                            <div key={invite.friendId}>
-                                <p>{invite.firstName}{invite.lastName}</p>
-                                <button onClick={()=>fetchAcceptInvite(invite.friendId)}>Akceptuj zaproszenie</button>
-                                <button onClick={()=>fetchRejectInvite(invite.friendId)}>Odrzuć zaproszenie</button>
-                            </div>
-                        </>)}
-                    </div>
-                    :<div className="text-2xl">
-                        Obecnie nie masz rzadnych zaproszeń
-                    </div>
-                }
-            </div>
-        </dialog>
-
     </div>
     
     </>)
