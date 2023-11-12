@@ -1,7 +1,7 @@
 
 
 import { apiCall, ApiCallType, RequestStatusHook } from "../axios"
-
+import { Message } from "../types"
 
 export type SendMessagePayload = {
     chatId: number,
@@ -19,8 +19,6 @@ export type SendMessageRequestResponseError = {
 
 }
 
-export type ResponseType = unknown
-
 export const sendMessage = async (payload: SendMessagePayload = initialSendMessagePayload, requestStatusHook?: RequestStatusHook) =>{
-    return apiCall<SendMessagePayload, ResponseType, SendMessageRequestResponseError>(ApiCallType.POST, "/message", payload, requestStatusHook)
+    return apiCall<SendMessagePayload, Message, SendMessageRequestResponseError>(ApiCallType.POST, "/message", payload, requestStatusHook)
 }

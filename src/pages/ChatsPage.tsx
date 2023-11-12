@@ -2,7 +2,7 @@
 
 /*components*/
 import { TmessagesContainer, SendMessageCallback } from "../components/TmessagesContainer"
-import { TchatContainer, CreateNewChatCallback, SelectChatCallback, SearchCallback } from "../components/TchatContainer"
+import { TchatContainer, SelectChatCallback, SearchCallback } from "../components/TchatContainer"
 import { Tnavigation } from "../components/Tnavigation"
 import { TfriendsContainer } from "../components/TfriendsContainer"
 import { TchatSettingsModal } from "../components/TchatSettingsModal"
@@ -30,7 +30,6 @@ import { sendMessage } from "../api/messages/sendMessage"
 import { getFriendsList } from "../api/friends/getFriendsList"
 import { getFirendsInvitesList } from "../api/friends/getFriendsInvitesList"
 import { createChat, CreateChatPayload, initialCreateChatPayload } from "../api/chats/createChat"
-import { deleteChatMember } from "../api/chats/deleteChatMember"
 
 export const ChatsPage = () =>{
     const navigate = useNavigate()
@@ -85,6 +84,7 @@ export const ChatsPage = () =>{
 
     const fetchCurrentChatDetails = async () =>{
         if(currentChatId == null) return;
+        // console.log(`currentchatDetails chat ${currentChatId}`)
 
         const resoultChatDetails = await getChatDetails({id: currentChatId})
         if(resoultChatDetails.status){
@@ -101,18 +101,6 @@ export const ChatsPage = () =>{
         }
     }
 
-    const fetchDeleteUser = async (chatId:number, userId:number) => {
-        const resoult = await deleteChatMember({chatId: chatId, userId: userId})
-    }
-
-    const fetchAcceptInvite = async (userId:number) =>{
-
-    }
-
-    const fetchRejectInvite = async (userId:number) =>{
-
-    }
-
     useEffect(()=>{
         if(currentUser == null){
             navigate("/");
@@ -123,10 +111,10 @@ export const ChatsPage = () =>{
         fetchUserFriendInviteList()
     }, [])
 
-    useEffect(()=>{
-        if(currentChatId != null)
-            fetchCurrentChatDetails()
-    },[currentChatId])
+    // useEffect(()=>{
+    //     if(currentChatId != null)
+    //         fetchCurrentChatDetails()
+    // },[currentChatId])
 
 
     const sendNewMessage:SendMessageCallback = async (newMessage) =>{
@@ -134,14 +122,24 @@ export const ChatsPage = () =>{
 
         if((currentChatDetails == null) || (currentUser == null)) return;
 
-        const sendMessageResoult = await sendMessage({
+        const resoult = await sendMessage({
             chatId: currentChatDetails.id,
             userId: currentUser.id,
             message: newMessage
         })
 
-        if(sendMessageResoult.status){
-            
+        if(resoult.status){
+            setCurrentChatMessages([
+                ...currentChatMessages,
+                resoult.data
+            ])
+            setCurrentUserChats(
+                currentUserChats.map(e=> e.id == currentChatId ? {...e, 
+                    lastMessage: resoult.data.message, 
+                    lastMessageNickname: currentChatDetails.chatMembers.filter(ee=>ee.userId == currentUser.id)[0].nickname,
+                    name: currentChatDetails.name
+                } : e)
+            )
         }
 
     }
@@ -170,9 +168,11 @@ export const ChatsPage = () =>{
     }
 
 
-    const onSelectChat:SelectChatCallback = async (chatId) =>{
+    const onSelectChat:SelectChatCallback = (chatId) =>{
         if(currentChatId == chatId) return;
+        // console.log(currentChatId)
         setCurrentChatId(chatId);
+        // console.log(`select chat ${currentChatId}`)
         fetchCurrentChatDetails();
         fetchCurrentChatMessages();
     }
@@ -181,9 +181,6 @@ export const ChatsPage = () =>{
         console.log(value)
     }
 
-    const MenuIemClickCallback = (itemName: string) =>{
-
-    }
 
     return (<>
     <div className="flex flex-row justify-between p-4 h-full">

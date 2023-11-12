@@ -58,23 +58,23 @@ export const TfriendsContainer = () =>{
                     currentUserFriendsInviteList.length > 0 &&
                     <div>
                         Zaproszenia do znjamoych:
-                        {currentUserFriendsInviteList.map(friend=><>
-                            <div>
+                        {currentUserFriendsInviteList.map(friend=>
+                            <div key={friend.friendId}>
                                 <span>{friend.firstName}{friend.lastName}({friend.friendId})</span>
                                 <button className="btn btn-sm btn-outline btn-primary ml-2">Zatwierdź</button>
                                 <button className="btn btn-sm btn-outline btn-primary ml-2">Odrzuć</button>
                             </div>
-                        </>)}
+                        )}
                     </div>
                 }
                 <div>
                     Twoi znajomi:
-                    {currentUserFriendsList.map(firend=><>
-                    <div>
+                    {currentUserFriendsList.map(firend=>
+                    <div key={firend.friendId}>
                         <span>{firend.firstName}{firend.lastName}({firend.friendId})</span>
                         <button className="btn btn-sm btn-outline btn-primary ml-2">usun ze znajomych</button>
                     </div>
-                    </>)}
+                    )}
                 </div>
                 </>
             }
@@ -82,12 +82,12 @@ export const TfriendsContainer = () =>{
                 { (searchUserListStatus == RequestStatus.Success && searchUserList.length == 0) 
                     ? <>Nic nie znaleziono</>
                     : <>
-                        {searchUserList.map(user=><>
-                        <div>
+                        {searchUserList.map(user=>
+                        <div key={user.id}>
                             <span>{user.firstName}{user.lastName}({user.id})</span>
                             <button className="btn btn-sm btn-outline btn-primary ml-2">dodaj do znajomych</button>
                         </div>
-                        </>)}
+                        )}
                     </>
                 }
             </div>
