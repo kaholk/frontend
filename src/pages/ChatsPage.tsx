@@ -35,20 +35,19 @@ export const ChatsPage = () =>{
     const navigate = useNavigate()
     const currentURL = window.location.pathname
 
-    const [currentUser, setCurrentUser] = useAtom(currentUserAtom)
+    const [currentUser, _setCurrentUser] = useAtom(currentUserAtom)
     const [currentUserChats, setCurrentUserChats] = useAtom(cureentUserChatsAtom)
 
     const [currentChatId, setCurrentChatId] = useAtom(currentChatIdAtom)
     const [currentChatDetails, setCurrentChatDetails] = useAtom(currentChatDetailsAtom)
     const [currentChatMessages, setCurrentChatMessages] = useAtom(currentChatMessagesAtom)
-    const [currentUserFriendsInviteList, setCurrentUserFriendsInviteList] = useAtom(currentUserFriendsInviteListAtom)
+    const [_currentUserFriendsInviteList, setCurrentUserFriendsInviteList] = useAtom(currentUserFriendsInviteListAtom)
     const [currentUserFriendsList, setCurrentUserFriendsList] = useAtom(currentUserFriendsListAtom)
 
     const [newChatPayload, setNewChatPayload] = useState<CreateChatPayload>(initialCreateChatPayload)
 
     const [newChatModal, setNewChatModal] = useState(false)
     const [chatSettingsModal, setChatSettingsModal] = useState(false)
-    const [invitesAcceptModal, setInvitesAcceptModal] = useState(false)
 
     const fetchUserChats = async () =>{
         if(currentUser == null) return;

@@ -30,13 +30,14 @@ export const TchatSettingsModal = ({
         closeCallback = () => {}
     }:TchatSettingsModalParams) =>{
 
-    const [currentChatId, setCurrentChatId] = useAtom(currentChatIdAtom)
+    const [currentChatId, _setCurrentChatId] = useAtom(currentChatIdAtom)
     const [currentChatDetails, setCurrentChatDetails] = useAtom(currentChatDetailsAtom)
-    const [currentUserFriendsList, setCurrentUserFriendsList] = useAtom(currentUserFriendsListAtom)
+    const [currentUserFriendsList, _setCurrentUserFriendsList] = useAtom(currentUserFriendsListAtom)
 
-    const [deleteChatStatus, setDeleteChatStatus] = useState<RequestStatus>(RequestStatus.Idle)
-    const [addChatMemberStatus, setAddChatMemberStatus] = useState<RequestStatus>(RequestStatus.Idle)
-    const [deleteChatMemberStatus, setDeleteChatMemberStatus] = useState<RequestStatus>(RequestStatus.Idle)
+    const [_deleteChatStatus, setDeleteChatStatus] = useState<RequestStatus>(RequestStatus.Idle)
+    const [_addChatMemberStatus, setAddChatMemberStatus] = useState<RequestStatus>(RequestStatus.Idle)
+    const [_deleteChatMemberStatus, setDeleteChatMemberStatus] = useState<RequestStatus>(RequestStatus.Idle)
+    const [_updateChatNameStatus, setUpdateChatNameStatus] = useState<RequestStatus>(RequestStatus.Idle)
 
     const [newChatName, setNewChatName] = useState<string>("")
 
@@ -48,7 +49,7 @@ export const TchatSettingsModal = ({
         if(currentChatId == null) return;
         if(currentChatDetails == null) return;
 
-        const resoult = await addChatMember({chatId: currentChatId, userId: userId});
+        const resoult = await addChatMember({chatId: currentChatId, userId: userId}, setAddChatMemberStatus);
         if(resoult.status){
             setCurrentChatDetails({...currentChatDetails, chatMembers: resoult.data})
         }
@@ -57,7 +58,7 @@ export const TchatSettingsModal = ({
     const fetchDeleteChatMember = async (userId: number) =>{
         if(currentChatId == null) return;
         if(currentChatDetails == null) return;
-        const resoult = await deleteChatMember({chatId: currentChatId, userId: userId});
+        const resoult = await deleteChatMember({chatId: currentChatId, userId: userId}, setDeleteChatMemberStatus);
 
         if(resoult.status){
             setCurrentChatDetails({
@@ -69,13 +70,16 @@ export const TchatSettingsModal = ({
 
     const fetchDeleteChat = async () =>{
         if(currentChatId == null) return;
-        const resoult = deleteChat({id: currentChatId}, setDeleteChatStatus);
+        const resoult = await deleteChat({id: currentChatId}, setDeleteChatStatus);
+        if(resoult.status){
+            
+        }
     }
 
     const fetchUpdateChatName = async () =>{
         if(currentChatId == null) return;
 
-        const resoult = await changeChatName({chatId: currentChatId, name: newChatName})
+        const resoult = await changeChatName({chatId: currentChatId, name: newChatName}, setUpdateChatNameStatus)
         if(resoult.status){
             setCurrentChatDetails(resoult.data)
             setNewChatName("");

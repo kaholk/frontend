@@ -8,10 +8,6 @@ import { RequestStatus, RequestBaseError, RequestResponseError } from "../api/ax
 
 import { 
     currentUserAtom, 
-    // cureentUserChatsAtom, 
-    // currentChatDetailsAtom, 
-    // currentChatIdAtom, 
-    // currentChatMessagesAtom 
 } from "../stores/currentUserAtoms"
 
 export const HomePage = () =>{
@@ -21,7 +17,7 @@ export const HomePage = () =>{
     const [loginStatus, setloginStatus] = useState<RequestStatus>(RequestStatus.Idle);
     const [loginResponeError, setLoginResponeError] = useState<RequestResponseError<LoginRequestResponseError>>(null)
     const [loginBaseError, setLoginBaseError] = useState<RequestBaseError>(null)
-    const [currentUser, setCurrentUser] = useAtom(currentUserAtom)
+    const [_currentUser, setCurrentUser] = useAtom(currentUserAtom)
 
 
     const loginValuesHook = (param:{namme:string, value:string}) => {

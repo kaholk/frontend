@@ -15,8 +15,8 @@ import {
 } from "../stores/currentUserAtoms"
 
 export const TfriendsContainer = () =>{
-    const [currentUserFriendsInviteList, setCurrentUserFriendsInviteList] = useAtom(currentUserFriendsInviteListAtom)
-    const [currentUserFriendsList, setCurrentUserFriendsList] = useAtom(currentUserFriendsListAtom)
+    const [currentUserFriendsInviteList, _setCurrentUserFriendsInviteList] = useAtom(currentUserFriendsInviteListAtom)
+    const [currentUserFriendsList, _setCurrentUserFriendsList] = useAtom(currentUserFriendsListAtom)
 
     const [searchUserList, setSearchUserList] = useState<User[]>([])
     const [searchUserListStatus, setSearchUserListStatus] = useState<RequestStatus>(RequestStatus.Idle);
