@@ -45,7 +45,7 @@ export const Tnavigation = () =>{
             </li>
             <li>
               <NavLink 
-                to="/test" className="tooltip" data-tip="Settings" 
+                to="/settings" className="tooltip" data-tip="Settings" 
                 children={ ({ isActive }) => <Icon path={isActive ? mdiCog : mdiCogOutline} size={1.5} className={ isActive ? "text-primary" : 'text-base-content'}/> }
               />
             </li>

@@ -39,10 +39,7 @@ export const HomePage = () =>{
         }
         setCurrentUser(resoult.data)
 
-
-
         navigate("chats")
-        
     }
 
     return(<>
@@ -59,22 +56,24 @@ export const HomePage = () =>{
                                 <span className="label-text">Email</span>
                             </label>
                             <input type="text" placeholder="email" className="input input-bordered" value={loginPayload.email} onChange={(e)=>loginValuesHook({namme: "email", value: e.target.value})}/>
-                            {loginResponeError?.message.email}
+                            <span className="text-error">{typeof loginResponeError?.message == "object" && loginResponeError.message.email}</span>
                         </div>
                         <div className="form-control">
                             <label className="label">
                                 <span className="label-text">Password</span>
                             </label>
                             <input type="password" placeholder="password" className="input input-bordered" value={loginPayload.password} onChange={(e)=>loginValuesHook({namme: "password", value: e.target.value})}/>
-                            {loginResponeError?.message.password}
+                            <span className="text-error">{typeof loginResponeError?.message === "string" && loginResponeError.message}</span>
                             <label className="label">
                                 <a href="#" className="label-text-alt link link-hover">Forgot password?</a>
                             </label>
                         </div>
                         <div className="form-control mt-6">
-                            <button className="btn btn-primary" onClick={()=>loginHook()}>Login</button>
-                            {loginStatus}
-                            {loginBaseError}
+                            <span className="text-error">{loginBaseError}</span>
+                            <button className={`btn btn-primary ${loginStatus == RequestStatus.Pending && "btn-disabled"}`} onClick={()=>loginHook()}>
+                            {loginStatus == RequestStatus.Pending && <span className="loading loading-spinner"/>}
+                            Login
+                            </button>
                             <label className="label label-text-alt">
                                 <span>
                                     <span>Do not have accout ? </span>

@@ -10,11 +10,16 @@ export type LoginPayload = {
     password: string;
 }
 
+// export type LoginRequestResponseError = {
+//     message:{
+//         email?: string;
+//         password?: string;
+//     }
+// }
 export type LoginRequestResponseError = {
     message:{
         email?: string;
-        password?: string;
-    }
+    } | string
 }
 
 

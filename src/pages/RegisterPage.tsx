@@ -50,37 +50,31 @@ export const RegisterPage = () =>{
                 <div className="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
                     <div className="card-body">
                         <div className="form-control">
-                            <label className="label">
-                                <span className="label-text">Email</span>
-                            </label>
+                            <label className="label label-text">Email</label>
                             <input type="text" placeholder="email" className="input input-bordered" value={registerPayload.email} onChange={(e)=>registerValuesHook({namme: "email" ,value: e.target.value})}/>
-                            {registerResponeError?.message.email}
+                            <span className="text-error">{registerResponeError?.message.email}</span>
                         </div>
                         <div className="form-control">
-                            <label className="label">
-                                <span className="label-text">Password</span>
-                            </label>
+                            <label className="label label-text">Password</label>
                             <input type="password" placeholder="password" className="input input-bordered" value={registerPayload.password} onChange={(e)=>registerValuesHook({namme: "password" ,value: e.target.value})}/>
-                            {registerResponeError?.message.password}
+                            <span className="text-error">{registerResponeError?.message.password}</span>
                         </div>
                         <div className="form-control">
-                            <label className="label">
-                                <span className="label-text">Imie</span>
-                            </label>
+                            <label className="label label-text">Imie</label>
                             <input type="text" placeholder="imie" className="input input-bordered" value={registerPayload.firstName} onChange={(e)=>registerValuesHook({namme: "firstName" ,value: e.target.value})}/>
-                            {registerResponeError?.message.firstName}
+                            <span className="text-error">{registerResponeError?.message.firstName}</span>
                         </div>
                         <div className="form-control">
-                            <label className="label">
-                                <span className="label-text">Nazwisko</span>
-                            </label>
+                            <label className="label label-text">Nazwisko</label>
                             <input type="text" placeholder="nazwisko" className="input input-bordered" value={registerPayload.lastName} onChange={(e)=>registerValuesHook({namme: "lastName" ,value: e.target.value})}/>
-                            {registerResponeError?.message.password}
+                            <span className="text-error">{registerResponeError?.message.password}</span>
                         </div>
                         <div className="form-control mt-6">
-                            <button className="btn btn-primary" onClick={()=>registerUserHook()}>Register</button>
-                            {registerStatus}
-                            {registerBaseError}
+                            <span className="text-error">{registerBaseError}</span>
+                            <button className={`btn btn-primary ${registerStatus == RequestStatus.Pending && "btn-disabled"}`} onClick={()=>registerUserHook()}>
+                                {registerStatus == RequestStatus.Pending && <span className="loading loading-spinner"/>}
+                                Register
+                            </button>
                             <label className="label label-text-alt">
                                 <span>
                                     <span>Do you have accout ? </span>

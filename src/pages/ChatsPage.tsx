@@ -6,6 +6,7 @@ import { TchatContainer, SelectChatCallback, SearchCallback } from "../component
 import { Tnavigation } from "../components/Tnavigation"
 import { TfriendsContainer } from "../components/TfriendsContainer"
 import { TchatSettingsModal } from "../components/TchatSettingsModal"
+import { TnewChatModal } from "../components/TnewChatModal"
 
 import { useNavigate } from "react-router-dom"
 import { useEffect, useState } from "react";
@@ -42,9 +43,7 @@ export const ChatsPage = () =>{
     const [currentChatDetails, setCurrentChatDetails] = useAtom(currentChatDetailsAtom)
     const [currentChatMessages, setCurrentChatMessages] = useAtom(currentChatMessagesAtom)
     const [_currentUserFriendsInviteList, setCurrentUserFriendsInviteList] = useAtom(currentUserFriendsInviteListAtom)
-    const [currentUserFriendsList, setCurrentUserFriendsList] = useAtom(currentUserFriendsListAtom)
-
-    const [newChatPayload, setNewChatPayload] = useState<CreateChatPayload>(initialCreateChatPayload)
+    const [_currentUserFriendsList, setCurrentUserFriendsList] = useAtom(currentUserFriendsListAtom)
 
     const [newChatModal, setNewChatModal] = useState(false)
     const [chatSettingsModal, setChatSettingsModal] = useState(false)
@@ -110,10 +109,10 @@ export const ChatsPage = () =>{
         fetchUserFriendInviteList()
     }, [])
 
-    // useEffect(()=>{
-    //     if(currentChatId != null)
-    //         fetchCurrentChatDetails()
-    // },[currentChatId])
+    useEffect(()=>{
+        if(currentChatId != null)
+            fetchCurrentChatDetails()
+    },[currentChatId])
 
 
     const sendNewMessage:SendMessageCallback = async (newMessage) =>{
@@ -142,30 +141,6 @@ export const ChatsPage = () =>{
         }
 
     }
-
-    const createNewChat = async () =>{
-        if(currentUser == null) return;
-
-        if(newChatPayload.name == ""){
-            setNewChatPayload(current => {
-                const {name, ...rest} = current
-                return rest
-            })
-        }
-
-        console.log(newChatPayload.chatMembers)
-        const payload = {
-            ...newChatPayload,
-            chatMembers: [...newChatPayload.chatMembers, currentUser.id]
-        }
-
-        const resoult = await createChat(payload)
-
-        if(resoult.status){
-            setCurrentUserChats([...currentUserChats, resoult.data])
-        }
-    }
-
 
     const onSelectChat:SelectChatCallback = (chatId) =>{
         if(currentChatId == chatId) return;
@@ -199,51 +174,8 @@ export const ChatsPage = () =>{
         <div className="flex flex-col h-full grow">
             <TmessagesContainer messages={currentChatMessages} /*avatarUrl={currentChat?.avatarUrl}*/ chatName={currentChatDetails?.name} sendMessageCallback={sendNewMessage} clickChatSettingsCallback={()=>setChatSettingsModal(true)}/>
         </div>
-        <dialog className={`modal ${newChatModal ? "modal-open" : "" }`}>
-            <div className="modal-box w-11/12 max-w-3xl">
-                <button className="btn btn-md btn-circle btn-ghost absolute right-2 top-2" onClick={() => setNewChatModal(false)}>X</button>
-                <h3 className="font-bold text-lg">Create New Chat!</h3>
-                <div className="divider" />
-                <div>
-                    {
-                        newChatPayload.chatMembers.length > 1 &&
-                        <input type="text" placeholder="chat name" className="input input-bordered input-primary w-full" onInput={(e)=> setNewChatPayload({...newChatPayload, name: e.currentTarget.value})} />
-                    }
-                </div>
-                <div className="divider" />
-                <div>
-                    <p>Chat members</p>
-                    {currentUser?.firstName} {currentUser?.lastName} (Ty)
-                    {currentUserFriendsList.filter(e=> newChatPayload.chatMembers.some(ee=>ee == e.friendId)).map(firend=> <>
-                        <div key={firend.friendId}>
-                            {firend.firstName} {firend.lastName}
-                            <button className="btn btn-sm btn-primary" onClick={()=>setNewChatPayload({
-                                ...newChatPayload,
-                                chatMembers: newChatPayload.chatMembers.filter(e=>e != firend.friendId)
-                            })}>-</button>
-                        </div>
-                    </>)}
-                </div>
-                <div className="divider" />
-                <div>
-                    <p>Users</p>
-                    {currentUserFriendsList.filter(e=> newChatPayload.chatMembers.every(ee=>ee != e.friendId)).map(firend=> <>
-                        <div key={firend.friendId}>
-                            {firend.firstName} {firend.lastName} ({firend.friendId})
-                            <button className="btn btn-sm btn-primary" onClick={()=> setNewChatPayload({
-                                ...newChatPayload,
-                                chatMembers: [...newChatPayload.chatMembers, firend.friendId]
-                            })}>+</button>
-                        </div>
-                    </>)}
-                </div>
-                <div className="divider" />
-                <div className="modal-action">
-                    <button className="btn btn-primary rounded-xl" onClick={()=>createNewChat()}>Create new chat</button>
-                </div>
-            </div>
-        </dialog>
-
+        
+        <TnewChatModal isOpen={newChatModal} closeCallback={()=>setNewChatModal(false)}/>
         <TchatSettingsModal isOpen={chatSettingsModal} closeCallback={()=>setChatSettingsModal(false)}/>
     </div>
     
