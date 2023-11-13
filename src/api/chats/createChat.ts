@@ -9,7 +9,10 @@ export type CreateChatPayload = {
 } 
 
 export type CreateChatRequestResponseError = {
-
+    message: {
+        chatMembers: string,
+        name: string
+    }
 }
 
 export const initialCreateChatPayload: CreateChatPayload = {

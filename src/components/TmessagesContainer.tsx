@@ -110,14 +110,15 @@ export const TmessagesContainer = ({
                 ref={virtuosoRef}
                 followOutput={'auto'}
                 itemContent={(_idx, m) => 
-                <Tmessage 
-                    message={m.message} 
-                    avatarUrl={m.avatarUrl} 
-                    messageDirection={m.messageDirection} 
-                    messageStatus={m.messageStatus} 
-                    owner={m.owner}  
-                    sendDate={m.sendDate}
-                />}
+                    <Tmessage 
+                        message={m.message} 
+                        avatarUrl={m.avatarUrl} 
+                        messageDirection={m.messageDirection} 
+                        messageStatus={m.messageStatus} 
+                        owner={m.owner}  
+                        sendDate={m.sendDate}
+                    />
+                }
             />
             {showScrollButton && (
                 <div className='flex justify-center'>

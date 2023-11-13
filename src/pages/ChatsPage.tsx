@@ -30,7 +30,6 @@ import { getChatDetails } from "../api/chats/getChatDetails"
 import { sendMessage } from "../api/messages/sendMessage"
 import { getFriendsList } from "../api/friends/getFriendsList"
 import { getFirendsInvitesList } from "../api/friends/getFriendsInvitesList"
-import { createChat, CreateChatPayload, initialCreateChatPayload } from "../api/chats/createChat"
 
 export const ChatsPage = () =>{
     const navigate = useNavigate()
@@ -89,7 +88,7 @@ export const ChatsPage = () =>{
             setCurrentChatDetails(resoultChatDetails.data)
         }
     }
-
+    
     const fetchCurrentChatMessages = async () =>{
         if(currentChatId == null) return;
 
@@ -98,22 +97,6 @@ export const ChatsPage = () =>{
             setCurrentChatMessages(resoultMessages.data)
         }
     }
-
-    useEffect(()=>{
-        if(currentUser == null){
-            navigate("/");
-            return;
-        }
-        fetchUserChats()
-        fetchUserFreindsList()
-        fetchUserFriendInviteList()
-    }, [])
-
-    useEffect(()=>{
-        if(currentChatId != null)
-            fetchCurrentChatDetails()
-    },[currentChatId])
-
 
     const sendNewMessage:SendMessageCallback = async (newMessage) =>{
         console.log(newMessage)
@@ -144,16 +127,29 @@ export const ChatsPage = () =>{
 
     const onSelectChat:SelectChatCallback = (chatId) =>{
         if(currentChatId == chatId) return;
-        // console.log(currentChatId)
         setCurrentChatId(chatId);
-        // console.log(`select chat ${currentChatId}`)
-        fetchCurrentChatDetails();
-        fetchCurrentChatMessages();
     }
 
     const searchChats:SearchCallback = (value) =>{
         console.log(value)
     }
+
+    useEffect(()=>{
+        if(currentUser == null){
+            navigate("/");
+            return;
+        }
+        fetchUserChats()
+        fetchUserFreindsList()
+        fetchUserFriendInviteList()
+    }, [])
+
+    useEffect(()=>{
+        if(currentChatId == null) return;
+
+        fetchCurrentChatDetails()
+        fetchCurrentChatMessages()
+    },[currentChatId])
 
 
     return (<>
@@ -162,8 +158,8 @@ export const ChatsPage = () =>{
             <Tnavigation/>
             <br />
             {
-            currentURL == "/chats" &&
-            <TchatContainer chats={currentUserChats} currentChatId={0} createNewChatCallback={()=>setNewChatModal(true)} selectChatCallback={onSelectChat} searchCallback={searchChats}/>
+                currentURL == "/chats" &&
+                <TchatContainer chats={currentUserChats} currentChatId={0} createNewChatCallback={()=>setNewChatModal(true)} selectChatCallback={onSelectChat} searchCallback={searchChats}/>
             }
             {
                 currentURL == "/friends" &&
@@ -174,7 +170,7 @@ export const ChatsPage = () =>{
         <div className="flex flex-col h-full grow">
             <TmessagesContainer messages={currentChatMessages} /*avatarUrl={currentChat?.avatarUrl}*/ chatName={currentChatDetails?.name} sendMessageCallback={sendNewMessage} clickChatSettingsCallback={()=>setChatSettingsModal(true)}/>
         </div>
-        
+
         <TnewChatModal isOpen={newChatModal} closeCallback={()=>setNewChatModal(false)}/>
         <TchatSettingsModal isOpen={chatSettingsModal} closeCallback={()=>setChatSettingsModal(false)}/>
     </div>
