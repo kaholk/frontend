@@ -15,7 +15,7 @@ import { useAtom } from "jotai"
 
 import { 
     currentUserAtom, 
-    cureentUserChatsAtom, 
+    currentUserChatsAtom, 
     currentChatDetailsAtom, 
     currentChatIdAtom, 
     currentChatMessagesAtom,
@@ -36,7 +36,7 @@ export const ChatsPage = () =>{
     const currentURL = window.location.pathname
 
     const [currentUser, _setCurrentUser] = useAtom(currentUserAtom)
-    const [currentUserChats, setCurrentUserChats] = useAtom(cureentUserChatsAtom)
+    const [currentUserChats, setCurrentUserChats] = useAtom(currentUserChatsAtom)
 
     const [currentChatId, setCurrentChatId] = useAtom(currentChatIdAtom)
     const [currentChatDetails, setCurrentChatDetails] = useAtom(currentChatDetailsAtom)
