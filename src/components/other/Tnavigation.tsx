@@ -10,7 +10,8 @@ import {
     mdiHelp,
 } from '@mdi/js'
 
-import logo from "../assets/favicon.ico"
+
+import logo from "../../assets/favicon.ico"
 
 
 
@@ -49,12 +50,12 @@ export const Tnavigation = () =>{
                 children={ ({ isActive }) => <Icon path={isActive ? mdiCog : mdiCogOutline} size={1.5} className={ isActive ? "text-primary" : 'text-base-content'}/> }
               />
             </li>
-            <li>
+            {/* <li>
               <NavLink 
                 to="/helpers" className="tooltip" data-tip="Helpers"
                 children={ ({ isActive }) => <Icon path={mdiHelp} size={1.5} className={ isActive ? "text-primary" : 'text-base-content'}/> }
               />
-            </li>
+            </li> */}
           </ul>
         </nav>
     </>)

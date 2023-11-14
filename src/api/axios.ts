@@ -1,6 +1,5 @@
 
 import axios from "axios"
-import { getDefaultStore, PrimitiveAtom } from "jotai"
 import React from "react"
 
 export const api = axios.create({

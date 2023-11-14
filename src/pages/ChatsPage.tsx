@@ -1,12 +1,15 @@
 
 
+
+
+
 /*components*/
-import { TmessagesContainer, SendMessageCallback } from "../components/containers/TmessagesContainer"
-import { TchatContainer, SelectChatCallback, SearchCallback } from "../components/containers/TchatContainer"
 import { Tnavigation } from "../components/other/Tnavigation"
 import { TfriendsContainer } from "../components/containers/TfriendsContainer"
-import { TchatSettingsModal } from "../components/modals/TchatSettingsModal"
-import { TnewChatModal } from "../components/modals/TnewChatModal"
+import { TchatContainer } from "../components/containers/TchatContainer"
+import { TsettingsContainer } from "../components/containers/TsettingsContainer"
+import { TmessagesContainer } from "../components/containers/TmessagesContainer"
+
 
 import { useNavigate } from "react-router-dom"
 import { useEffect, useState } from "react";
@@ -123,6 +126,7 @@ export const ChatsPage = () =>{
             <br />
             { currentURL == "/chats" && <TchatContainer /> }
             { currentURL == "/friends" && <TfriendsContainer />}
+            { currentURL == "/settings" && <TsettingsContainer />}
         </div>
         <div className="flex flex-col h-full grow">
             <TmessagesContainer />
