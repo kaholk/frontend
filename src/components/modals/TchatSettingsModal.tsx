@@ -5,7 +5,7 @@ import { useState } from "react"
 
 import { 
     currentChatDetailsAtom, 
-    currentUserFriendsListAtom,
+    friendsListAtom,
     currentChatIdAtom
 } from "../../stores/currentUserAtoms"
 
@@ -32,7 +32,7 @@ export const TchatSettingsModal = ({
 
     const [currentChatId, _setCurrentChatId] = useAtom(currentChatIdAtom)
     const [currentChatDetails, setCurrentChatDetails] = useAtom(currentChatDetailsAtom)
-    const [currentUserFriendsList, _setCurrentUserFriendsList] = useAtom(currentUserFriendsListAtom)
+    const [currentUserFriendsList, _setCurrentUserFriendsList] = useAtom(friendsListAtom)
 
     const [_deleteChatStatus, setDeleteChatStatus] = useState<RequestStatus>(RequestStatus.Idle)
     const [_addChatMemberStatus, setAddChatMemberStatus] = useState<RequestStatus>(RequestStatus.Idle)

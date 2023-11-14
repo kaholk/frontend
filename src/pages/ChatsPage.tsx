@@ -1,125 +1,72 @@
 
+/*vvvvvvvvvv react*/
+import { useNavigate } from "react-router-dom"
+import { useEffect } from "react";
+/*^^^^^^^^^^ react*/
+
+/*vvvvvvvvvv jotai*/
+import { useAtom } from "jotai"
+/*^^^^^^^^^^ jotai*/
 
 
-
-
-/*components*/
+/*vvvvvvvvvv components*/
 import { Tnavigation } from "../components/other/Tnavigation"
 import { TfriendsContainer } from "../components/containers/TfriendsContainer"
 import { TchatContainer } from "../components/containers/TchatContainer"
 import { TsettingsContainer } from "../components/containers/TsettingsContainer"
 import { TmessagesContainer } from "../components/containers/TmessagesContainer"
+/*^^^^^^^^^^ components*/
 
-
-import { useNavigate } from "react-router-dom"
-import { useEffect, useState } from "react";
-import { useAtom } from "jotai"
-
-
+/*vvvvvvvvvv import store*/
 import { 
+    // variables
     userAtom, 
-    userChatsAtom, 
-    currentChatDetailsAtom, 
-    currentChatIdAtom, 
-    currentChatMessagesAtom,
-    currentUserFriendsInviteListAtom,
-    currentUserFriendsListAtom,
-    userChatsRequestStatusAtom,
-    // fetchUserChats,
+    currentChatIdAtom,
+
+    // methods
+    fetchUserChats,
+    fetchFriendsList,
+    fetchCurrentChatDetails,
+    fetchCurrentChatMessages,
+    fetchFriendsInviteList
 } from "../stores/currentUserAtoms"
+/*^^^^^^^^^^ import store*/
 
-/*api methods*/
-import { getUserChats } from "../api/chats/getUserChats"
-import { getMessages } from "../api/messages/getMessages"
-import { getChatDetails } from "../api/chats/getChatDetails"
-import { getFriendsList } from "../api/friends/getFriendsList"
-import { getFirendsInvitesList } from "../api/friends/getFriendsInvitesList"
-
-
-
+// chats page component
 export const ChatsPage = () =>{
+    
+    // navigate method, used to redirect
     const navigate = useNavigate()
+
+    // current url path, neded to conditional render
     const currentURL = window.location.pathname
 
+    // store variables
     const [currentUser, _setCurrentUser] = useAtom(userAtom)
-    const [currentUserChats, setCurrentUserChats] = useAtom(userChatsAtom)
+    const [currentChatId, _setCurrentChatId] = useAtom(currentChatIdAtom)
 
-    const [currentChatId, setCurrentChatId] = useAtom(currentChatIdAtom)
-    const [_currentChatDetails, setCurrentChatDetails] = useAtom(currentChatDetailsAtom)
-    const [_currentChatMessages, setCurrentChatMessages] = useAtom(currentChatMessagesAtom)
-    const [_currentUserFriendsInviteList, setCurrentUserFriendsInviteList] = useAtom(currentUserFriendsInviteListAtom)
-    const [_currentUserFriendsList, setCurrentUserFriendsList] = useAtom(currentUserFriendsListAtom)
-    
-    const fetchUserChats = async () =>{
-        if(currentUser == null) return;
-        const resoult = await getUserChats({id: currentUser.id})
-        if(resoult.status == false){
-            // show error
-            return;
-        }
-        setCurrentUserChats(resoult.data)
-        if(resoult.data.length > 0 && currentChatId == null)
-            setCurrentChatId(resoult.data[0].id)
-    }
-
-    const fetchUserFreindsList = async () =>{
-        if(currentUser == null) return;
-        const resoult = await getFriendsList({id: currentUser.id})
-        if(resoult.status == false){
-            // show error
-            return;
-        }
-        setCurrentUserFriendsList(resoult.data)
-    }
-
-    const fetchUserFriendInviteList = async () =>{
-        if(currentUser == null) return;
-        const resoult = await getFirendsInvitesList({id: currentUser.id})
-        if(resoult.status == false){
-            // show error
-            return;
-        }
-        setCurrentUserFriendsInviteList(resoult.data)
-    }
-
-    const fetchCurrentChatDetails = async () =>{
-        if(currentChatId == null) return;
-        // console.log(`currentchatDetails chat ${currentChatId}`)
-
-        const resoultChatDetails = await getChatDetails({id: currentChatId})
-        if(resoultChatDetails.status){
-            setCurrentChatDetails(resoultChatDetails.data)
-        }
-    }
-    
-    const fetchCurrentChatMessages = async () =>{
-        if(currentChatId == null) return;
-
-        const resoultMessages = await getMessages({id: currentChatId})
-        if(resoultMessages.status){
-            setCurrentChatMessages(resoultMessages.data)
-        }
-    }
-
+    // download user chats, friends and invites on first render
     useEffect(()=>{
         if(currentUser == null){
             navigate("/");
             return;
         }
         fetchUserChats()
-        fetchUserFreindsList()
-        fetchUserFriendInviteList()
+        fetchFriendsList()
+        fetchFriendsInviteList()
     }, [])
     
+    // download user chats, chat details and chats messages when chat id has changed
     useEffect(()=>{
-        if(currentChatId == null) return;
+        if(currentChatId == null) 
+            return;
         fetchUserChats()
         fetchCurrentChatDetails()
         fetchCurrentChatMessages()
     },[currentChatId])
 
 
-    return (<>
+    return (
     <div className="flex flex-row justify-between p-4 h-full">
         <div className="flex flex-col h-full w-1/3 mr-4">
             <Tnavigation/>
@@ -132,6 +79,5 @@ export const ChatsPage = () =>{
             <TmessagesContainer />
         </div>
     </div>
-    
-    </>)
+    )
 }

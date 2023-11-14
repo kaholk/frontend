@@ -5,7 +5,7 @@
 import { useState } from "react";
 import { useAtom } from "jotai";
 
-import { userChatsAtom, userAtom, currentUserFriendsListAtom } from "../../stores/currentUserAtoms";
+import { userChatsAtom, userAtom, friendsListAtom } from "../../stores/currentUserAtoms";
 import { RequestStatus, RequestResponseError } from "../../api/axios";
 import { CreateChatPayload, createChat, CreateChatRequestError, initialCreateChatPayload} from "../../api/chats/createChat"
 
@@ -21,7 +21,7 @@ export const TnewChatModal = ({
 }:TnewChatModalParams) =>{
 
     const [currentUser, _setCurrentUser] = useAtom(userAtom)
-    const [currentUserFriendsList, setCurrentUserFriendsList] = useAtom(currentUserFriendsListAtom)
+    const [currentUserFriendsList, setCurrentUserFriendsList] = useAtom(friendsListAtom)
     const [currentUserChats, setCurrentUserChats] = useAtom(userChatsAtom)
     
     const [newChatPayload, setNewChatPayload] = useState<CreateChatPayload>(initialCreateChatPayload)

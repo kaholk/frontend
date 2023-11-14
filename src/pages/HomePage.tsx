@@ -1,27 +1,44 @@
 
+/*vvvvvvvvvv react*/
 import { useNavigate } from "react-router-dom"
 import { useState } from "react";
+/*^^^^^^^^^^ react*/
+
+/*vvvvvvvvvv jotai*/
 import { useAtom } from "jotai"
+/*^^^^^^^^^^ jotai*/
 
-import { LoginPayload, initialLoginPayload, LoginRequestError, userLogin} from "./../api/user/loginUser"
+/*vvvvvvvvvv api types*/
 import { RequestStatus, RequestResponseError } from "../api/axios"
+/*^^^^^^^^^^ api types*/
 
+/*vvvvvvvvvv api calls*/
+import { userLogin, LoginPayload, initialLoginPayload, LoginRequestError } from "./../api/user/loginUser"
+/*^^^^^^^^^^ api calls*/
+
+/*vvvvvvvvvv import store*/
 import { 
-    userAtom, 
+    // variables
+    userAtom
 } from "../stores/currentUserAtoms"
+/*^^^^^^^^^^ import store*/
 
+
+// homePage page compoment
 export const HomePage = () =>{
-    const navigate = useNavigate()
 
-    const [loginPayload, setLoginPayload] = useState<LoginPayload>(initialLoginPayload)
+    // navigate method, used to redirect
+    const navigate = useNavigate();
+
+    // loginPayload, loginStatus and loginResponseError used to try login user and show callback
+    const [loginPayload, setLoginPayload] = useState<LoginPayload>(initialLoginPayload);
     const [loginStatus, setloginStatus] = useState<RequestStatus>(RequestStatus.Idle);
+    const [loginResponseError, setLoginResponseError] = useState<RequestResponseError<LoginRequestError>>(null);
 
-    const [loginResponseError, setLoginResponseError] = useState<RequestResponseError<LoginRequestError>>(null)
+    // store variables
+    const [_currentUser, setCurrentUser] = useAtom(userAtom);
 
-
-    const [_currentUser, setCurrentUser] = useAtom(userAtom)
-
-
+    // update loginPayload when input login or password
     const loginValuesHook = (param:{namme:string, value:string}) => {
         setLoginPayload({
             email: param.namme == "email" ? param.value : loginPayload.email,
@@ -29,19 +46,28 @@ export const HomePage = () =>{
         });
     }
 
-    const loginHook = async () =>{
+    // method when click "login" buttin
+    const clickLoginButton = async () =>{
+
+        // reset values
+        setloginStatus(RequestStatus.Idle);
         setLoginResponseError(null);
 
-        const resoult = await userLogin(loginPayload, setloginStatus)
+        // try login user
+        const resoult = await userLogin(loginPayload, setloginStatus);
+
+        // if error while downloading data
         if(resoult.status == false){
-            setLoginResponseError(resoult.data)
+            setLoginResponseError(resoult.data);
             return;
         }
-        setCurrentUser(resoult.data)
 
+        // if login success
+        setCurrentUser(resoult.data);
         navigate("chats")
     }
 
+    // render page
     return(<>
         <div className="hero min-h-screen bg-base-200">
             <div className="hero-content flex-col lg:flex-row-reverse">
@@ -70,7 +96,7 @@ export const HomePage = () =>{
                         </div>
                         <div className="form-control mt-6">
                             <span className="text-error">{loginResponseError?.baseError}</span>
-                            <button className={`btn btn-primary ${loginStatus == RequestStatus.Pending && "btn-disabled"}`} onClick={()=>loginHook()}>
+                            <button className={`btn btn-primary ${loginStatus == RequestStatus.Pending && "btn-disabled"}`} onClick={()=>clickLoginButton()}>
                             {loginStatus == RequestStatus.Pending && <span className="loading loading-spinner"/>}
                             Login
                             </button>

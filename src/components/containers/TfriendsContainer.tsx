@@ -10,13 +10,13 @@ import { User } from "../../api/types"
 import { RequestStatus } from "../../api/axios"
 
 import { 
-    currentUserFriendsInviteListAtom,
-    currentUserFriendsListAtom
+    friendsInviteListAtom,
+    friendsListAtom
 } from "../../stores/currentUserAtoms"
 
 export const TfriendsContainer = () =>{
-    const [currentUserFriendsInviteList, _setCurrentUserFriendsInviteList] = useAtom(currentUserFriendsInviteListAtom)
-    const [currentUserFriendsList, _setCurrentUserFriendsList] = useAtom(currentUserFriendsListAtom)
+    const [currentUserFriendsInviteList, _setCurrentUserFriendsInviteList] = useAtom(friendsInviteListAtom)
+    const [currentUserFriendsList, _setCurrentUserFriendsList] = useAtom(friendsListAtom)
 
     const [searchUserList, setSearchUserList] = useState<User[]>([])
     const [searchUserListStatus, setSearchUserListStatus] = useState<RequestStatus>(RequestStatus.Idle);

@@ -1,43 +1,57 @@
 
+/*vvvvvvvvvv react*/
 import { useNavigate } from "react-router-dom"
 import { useState } from "react";
+/*^^^^^^^^^^ react*/
 
-import { registerUser, RegisterRequestError, RegisterPayload, initialRegisterPayload} from "../api/user/registerUser"
+/*vvvvvvvvvv api types*/
 import { RequestStatus, RequestResponseError } from "../api/axios"
+/*^^^^^^^^^^ api types*/
 
+/*vvvvvvvvvv api calls*/
+import { registerUser, RegisterRequestError, RegisterPayload, initialRegisterPayload} from "../api/user/registerUser"
+/*^^^^^^^^^^ api calls*/
 
+// registerPage page component
 export const RegisterPage = () =>{
-    const navigate = useNavigate()
 
-    const [registerPayload, setRegisterPayload] = useState<RegisterPayload>(initialRegisterPayload)
+    // navigate method, used to redirect
+    const navigate = useNavigate();
+
+    // registerPayload, registerStatus and registerResponeError used to try register user and show callback
+    const [registerPayload, setRegisterPayload] = useState<RegisterPayload>(initialRegisterPayload);
     const [registerStatus, setRegisterStatus] = useState<RequestStatus>(RequestStatus.Idle);
+    const [registerResponeError, setRegisterResponeError] = useState<RequestResponseError<RegisterRequestError>>(null);
 
-    const [registerResponeError, setRegisterResponeError] = useState<RequestResponseError<RegisterRequestError>>(null)
-
-
+    // update registerPayload when input data in register form
     const registerValuesHook = (param:{namme:string, value:string}) => {
         setRegisterPayload({
             email: param.namme == "email" ? param.value : registerPayload.email,
             firstName: param.namme == "firstName" ? param.value : registerPayload.firstName,
             lastName: param.namme == "lastName" ? param.value : registerPayload.lastName,
             password: param.namme == "password" ? param.value : registerPayload.password,
-        })
+        });
     }
 
-    const registerUserHook = async () =>{
+    // method when click "register" button
+    const clickRegisterButtton = async () =>{
+
+        // reset values
+        setRegisterStatus(RequestStatus.Idle);
         setRegisterResponeError(null);
 
-        const resoult = await registerUser(registerPayload, setRegisterStatus)
-        if(resoult.status){
-            console.log(resoult.data)
-            // navigate("/")
-        }
-        else{
-            setRegisterResponeError(resoult.data)
+        // try register user
+        const resoult = await registerUser(registerPayload, setRegisterStatus);
+        if(resoult.status == false){
+            setRegisterResponeError(resoult.data);
+            return;
         }
 
+        // if register success
+        navigate("/");
     }
 
+    // render page
     return(<>
         <div className="hero min-h-screen bg-base-200">
             <div className="hero-content flex-col lg:flex-row-reverse">
@@ -69,7 +83,7 @@ export const RegisterPage = () =>{
                         </div>
                         <div className="form-control mt-6">
                             <span className="text-error">{registerResponeError?.baseError}</span>
-                            <button className={`btn btn-primary ${registerStatus == RequestStatus.Pending && "btn-disabled"}`} onClick={()=>registerUserHook()}>
+                            <button className={`btn btn-primary ${registerStatus == RequestStatus.Pending && "btn-disabled"}`} onClick={()=>clickRegisterButtton()}>
                                 {registerStatus == RequestStatus.Pending && <span className="loading loading-spinner"/>}
                                 Register
                             </button>
