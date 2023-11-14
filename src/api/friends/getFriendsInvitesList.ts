@@ -1,6 +1,6 @@
 
 
-import { apiCall, ApiCallType, RequestStatusHook } from "../axios"
+import { apiCall, ApiCallType, RequestStatusHookType } from "../axios"
 import { Friend } from "../types"
 
 /*Types*/
@@ -8,7 +8,7 @@ export type GetFirendsInvitesListPayload = {
     id: number
 }
 
-export type GetFirendsInvitesListRequestResponseError = {
+export type GetFirendsInvitesListRequestError = {
 
 }
 
@@ -19,7 +19,7 @@ export const initialGetFirendsInvitesListPayload:GetFirendsInvitesListPayload = 
 
 
 
-export const getFirendsInvitesList = async (payload: GetFirendsInvitesListPayload = initialGetFirendsInvitesListPayload, requestStatusHook?: RequestStatusHook) =>{
+export const getFirendsInvitesList = async (payload: GetFirendsInvitesListPayload = initialGetFirendsInvitesListPayload, requestStatusHook?: RequestStatusHookType) =>{
     const url = `/friend/${payload.id}/invites`
-    return apiCall<undefined, Friend[], GetFirendsInvitesListRequestResponseError>(ApiCallType.GET, url, undefined, requestStatusHook)
+    return apiCall<undefined, Friend[], GetFirendsInvitesListRequestError>(ApiCallType.GET, url, undefined, requestStatusHook)
 }

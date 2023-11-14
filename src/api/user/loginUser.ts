@@ -1,5 +1,5 @@
 
-import { apiCall, ApiCallType, RequestStatusHook } from "../axios"
+import { apiCall, ApiCallType, RequestStatusHookType } from "../axios"
 import { User } from "../types"
 
 
@@ -16,7 +16,7 @@ export type LoginPayload = {
 //         password?: string;
 //     }
 // }
-export type LoginRequestResponseError = {
+export type LoginRequestError = {
     message:{
         email?: string;
     } | string
@@ -28,6 +28,6 @@ export const initialLoginPayload:LoginPayload = {email: '', password: ''}
 
 
 /*Methods*/
-export const userLogin = async (payload: LoginPayload = initialLoginPayload, requestStatusHook?: RequestStatusHook) =>{
-    return apiCall<LoginPayload, User, LoginRequestResponseError>(ApiCallType.POST, "/user/login", payload, requestStatusHook)
+export const userLogin = async (payload: LoginPayload = initialLoginPayload, requestStatusHook?: RequestStatusHookType) =>{
+    return apiCall<LoginPayload, User, LoginRequestError>(ApiCallType.POST, "/user/login", payload, requestStatusHook)
 }

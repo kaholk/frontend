@@ -5,9 +5,9 @@
 import { useState } from "react";
 import { useAtom } from "jotai";
 
-import { currentUserChatsAtom, currentUserAtom, currentUserFriendsListAtom } from "../stores/currentUserAtoms";
-import { RequestStatus, RequestResponseError } from "../api/axios";
-import { CreateChatPayload, createChat, CreateChatRequestResponseError, initialCreateChatPayload} from "../api/chats/createChat"
+import { userChatsAtom, userAtom, currentUserFriendsListAtom } from "../stores/currentUserAtoms";
+import { RequestStatus, RequestResponseErrorType } from "../api/axios";
+import { CreateChatPayload, createChat, CreateChatRequestError, initialCreateChatPayload} from "../api/chats/createChat"
 
 
 export type TnewChatModalParams = {
@@ -20,15 +20,15 @@ export const TnewChatModal = ({
     closeCallback = () => {}
 }:TnewChatModalParams) =>{
 
-    const [currentUser, _setCurrentUser] = useAtom(currentUserAtom)
+    const [currentUser, _setCurrentUser] = useAtom(userAtom)
     const [currentUserFriendsList, setCurrentUserFriendsList] = useAtom(currentUserFriendsListAtom)
-    const [currentUserChats, setCurrentUserChats] = useAtom(currentUserChatsAtom)
+    const [currentUserChats, setCurrentUserChats] = useAtom(userChatsAtom)
     
     const [newChatPayload, setNewChatPayload] = useState<CreateChatPayload>(initialCreateChatPayload)
 
 
     const [createChatStatus, setUpdateChatNameStatus] = useState<RequestStatus>(RequestStatus.Idle)
-    const [createChatError, setCreateChatError] = useState<RequestResponseError<CreateChatRequestResponseError>>(null)
+    const [createChatError, setCreateChatError] = useState<RequestResponseErrorType<CreateChatRequestError>>(null)
 
     const createNewChat = async () =>{
         if(currentUser == null) return;

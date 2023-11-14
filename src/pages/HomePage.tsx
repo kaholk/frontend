@@ -3,11 +3,11 @@ import { useNavigate } from "react-router-dom"
 import { useState } from "react";
 import { useAtom } from "jotai"
 
-import { LoginPayload, initialLoginPayload, LoginRequestResponseError, userLogin} from "./../api/user/loginUser"
-import { RequestStatus, RequestBaseError, RequestResponseError } from "../api/axios"
+import { LoginPayload, initialLoginPayload, LoginRequestError, userLogin} from "./../api/user/loginUser"
+import { RequestStatus, RequestResponseError } from "../api/axios"
 
 import { 
-    currentUserAtom, 
+    userAtom, 
 } from "../stores/currentUserAtoms"
 
 export const HomePage = () =>{
@@ -15,9 +15,11 @@ export const HomePage = () =>{
 
     const [loginPayload, setLoginPayload] = useState<LoginPayload>(initialLoginPayload)
     const [loginStatus, setloginStatus] = useState<RequestStatus>(RequestStatus.Idle);
-    const [loginResponeError, setLoginResponeError] = useState<RequestResponseError<LoginRequestResponseError>>(null)
-    const [loginBaseError, setLoginBaseError] = useState<RequestBaseError>(null)
-    const [_currentUser, setCurrentUser] = useAtom(currentUserAtom)
+
+    const [loginResponseError, setLoginResponseError] = useState<RequestResponseError<LoginRequestError>>(null)
+
+
+    const [_currentUser, setCurrentUser] = useAtom(userAtom)
 
 
     const loginValuesHook = (param:{namme:string, value:string}) => {
@@ -28,13 +30,11 @@ export const HomePage = () =>{
     }
 
     const loginHook = async () =>{
-        setLoginResponeError(null);
-        setLoginBaseError(null);
+        setLoginResponseError(null);
 
         const resoult = await userLogin(loginPayload, setloginStatus)
         if(resoult.status == false){
-            setLoginResponeError(resoult.responseError);
-            setLoginBaseError(resoult.baseError);
+            setLoginResponseError(resoult.data)
             return;
         }
         setCurrentUser(resoult.data)
@@ -56,20 +56,20 @@ export const HomePage = () =>{
                                 <span className="label-text">Email</span>
                             </label>
                             <input type="text" placeholder="email" className="input input-bordered" value={loginPayload.email} onChange={(e)=>loginValuesHook({namme: "email", value: e.target.value})}/>
-                            <span className="text-error">{typeof loginResponeError?.message == "object" && loginResponeError.message.email}</span>
+                            <span className="text-error">{typeof loginResponseError?.error?.message == "object" && loginResponseError.error.message.email}</span>
                         </div>
                         <div className="form-control">
                             <label className="label">
                                 <span className="label-text">Password</span>
                             </label>
                             <input type="password" placeholder="password" className="input input-bordered" value={loginPayload.password} onChange={(e)=>loginValuesHook({namme: "password", value: e.target.value})}/>
-                            <span className="text-error">{typeof loginResponeError?.message === "string" && loginResponeError.message}</span>
+                            <span className="text-error">{typeof loginResponseError?.error?.message === "string" && loginResponseError.error.message}</span>
                             <label className="label">
                                 <a href="#" className="label-text-alt link link-hover">Forgot password?</a>
                             </label>
                         </div>
                         <div className="form-control mt-6">
-                            <span className="text-error">{loginBaseError}</span>
+                            <span className="text-error">{loginResponseError?.baseError}</span>
                             <button className={`btn btn-primary ${loginStatus == RequestStatus.Pending && "btn-disabled"}`} onClick={()=>loginHook()}>
                             {loginStatus == RequestStatus.Pending && <span className="loading loading-spinner"/>}
                             Login

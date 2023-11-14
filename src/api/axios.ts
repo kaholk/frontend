@@ -22,15 +22,18 @@ export enum ApiCallType {
     PATCH = "PATCH"
 }
 
-export type RequestStatusHook = React.Dispatch<React.SetStateAction<RequestStatus>> | undefined
-export type RequestBaseError = string | null
-export type RequestResponseError<RequuestResponseErrorType> = RequuestResponseErrorType | null
+export type RequestStatusHookType = React.Dispatch<React.SetStateAction<RequestStatus>> | undefined
+
+
+export type RequestResponseError<RequuestResponseErrorType> = {
+    error: RequuestResponseErrorType | null
+    baseError: string | null
+} | null
 
 export type RequestResponse<ResponseType, RequuestResponseErrorType> = 
 {
     status: false,
-    responseError: RequestResponseError<RequuestResponseErrorType>,
-    baseError: RequestBaseError
+    data: RequestResponseError<RequuestResponseErrorType>
 } |
 {
     status: true,
@@ -39,7 +42,7 @@ export type RequestResponse<ResponseType, RequuestResponseErrorType> =
 
 
 
-export const apiCall = async <PayloadType, ResponseType, RequestResponseErrorType> (callType: ApiCallType, url:string, payload?:PayloadType, requestStatusHook?: RequestStatusHook) =>{
+export const apiCall = async <PayloadType, ResponseType, RequestResponseErrorType> (callType: ApiCallType, url:string, payload?:PayloadType, requestStatusHook?: RequestStatusHookType) =>{
 
     if(requestStatusHook != undefined) requestStatusHook(RequestStatus.Pending)
     try{
@@ -56,15 +59,19 @@ export const apiCall = async <PayloadType, ResponseType, RequestResponseErrorTyp
         if (error.response){
             return {
                 status: false,
-                responseError: error.response.data as RequestResponseErrorType,
-                baseError: null
+                data: {
+                    baseError: null,
+                    error: error.response.data
+                }
             } as RequestResponse<ResponseType, RequestResponseErrorType>
         }
         else{
             return {
                 status: false,
-                baseError: "Coś poszło nie tak",
-                responseError: null
+                data: {
+                    baseError: "Coś poszło nie tak",
+                    error: null
+                }
             } as RequestResponse<ResponseType, RequestResponseErrorType>
         }
 

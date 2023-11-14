@@ -2,8 +2,8 @@
 import { useNavigate } from "react-router-dom"
 import { useState } from "react";
 
-import { registerUser, RegisterRequestResponseError, RegisterPayload, initialRegisterPayload} from "../api/user/registerUser"
-import { RequestStatus, RequestBaseError, RequestResponseError } from "../api/axios"
+import { registerUser, RegisterRequestError, RegisterPayload, initialRegisterPayload} from "../api/user/registerUser"
+import { RequestStatus, RequestResponseError } from "../api/axios"
 
 
 export const RegisterPage = () =>{
@@ -11,8 +11,8 @@ export const RegisterPage = () =>{
 
     const [registerPayload, setRegisterPayload] = useState<RegisterPayload>(initialRegisterPayload)
     const [registerStatus, setRegisterStatus] = useState<RequestStatus>(RequestStatus.Idle);
-    const [registerResponeError, setRegisterResponeError] = useState<RequestResponseError<RegisterRequestResponseError>>(null)
-    const [registerBaseError, setRegisterBaseError] = useState<RequestBaseError>(null)
+
+    const [registerResponeError, setRegisterResponeError] = useState<RequestResponseError<RegisterRequestError>>(null)
 
 
     const registerValuesHook = (param:{namme:string, value:string}) => {
@@ -25,7 +25,6 @@ export const RegisterPage = () =>{
     }
 
     const registerUserHook = async () =>{
-        setRegisterBaseError(null);
         setRegisterResponeError(null);
 
         const resoult = await registerUser(registerPayload, setRegisterStatus)
@@ -34,8 +33,7 @@ export const RegisterPage = () =>{
             // navigate("/")
         }
         else{
-            setRegisterBaseError(resoult.baseError)
-            setRegisterResponeError(resoult.responseError)
+            setRegisterResponeError(resoult.data)
         }
 
     }
@@ -52,25 +50,25 @@ export const RegisterPage = () =>{
                         <div className="form-control">
                             <label className="label label-text">Email</label>
                             <input type="text" placeholder="email" className="input input-bordered" value={registerPayload.email} onChange={(e)=>registerValuesHook({namme: "email" ,value: e.target.value})}/>
-                            <span className="text-error">{registerResponeError?.message.email}</span>
+                            <span className="text-error">{registerResponeError?.error?.message.email}</span>
                         </div>
                         <div className="form-control">
                             <label className="label label-text">Password</label>
                             <input type="password" placeholder="password" className="input input-bordered" value={registerPayload.password} onChange={(e)=>registerValuesHook({namme: "password" ,value: e.target.value})}/>
-                            <span className="text-error">{registerResponeError?.message.password}</span>
+                            <span className="text-error">{registerResponeError?.error?.message.password}</span>
                         </div>
                         <div className="form-control">
                             <label className="label label-text">Imie</label>
                             <input type="text" placeholder="imie" className="input input-bordered" value={registerPayload.firstName} onChange={(e)=>registerValuesHook({namme: "firstName" ,value: e.target.value})}/>
-                            <span className="text-error">{registerResponeError?.message.firstName}</span>
+                            <span className="text-error">{registerResponeError?.error?.message.firstName}</span>
                         </div>
                         <div className="form-control">
                             <label className="label label-text">Nazwisko</label>
                             <input type="text" placeholder="nazwisko" className="input input-bordered" value={registerPayload.lastName} onChange={(e)=>registerValuesHook({namme: "lastName" ,value: e.target.value})}/>
-                            <span className="text-error">{registerResponeError?.message.password}</span>
+                            <span className="text-error">{registerResponeError?.error?.message.password}</span>
                         </div>
                         <div className="form-control mt-6">
-                            <span className="text-error">{registerBaseError}</span>
+                            <span className="text-error">{registerResponeError?.baseError}</span>
                             <button className={`btn btn-primary ${registerStatus == RequestStatus.Pending && "btn-disabled"}`} onClick={()=>registerUserHook()}>
                                 {registerStatus == RequestStatus.Pending && <span className="loading loading-spinner"/>}
                                 Register

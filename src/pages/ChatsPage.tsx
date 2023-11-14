@@ -14,38 +14,40 @@ import { useAtom } from "jotai"
 
 
 import { 
-    currentUserAtom, 
-    currentUserChatsAtom, 
+    userAtom, 
+    userChatsAtom, 
     currentChatDetailsAtom, 
     currentChatIdAtom, 
     currentChatMessagesAtom,
     currentUserFriendsInviteListAtom,
-    currentUserFriendsListAtom
+    currentUserFriendsListAtom,
+    userChatsRequestStatusAtom,
+    // fetchUserChats,
 } from "../stores/currentUserAtoms"
 
 /*api methods*/
 import { getUserChats } from "../api/chats/getUserChats"
 import { getMessages } from "../api/messages/getMessages"
 import { getChatDetails } from "../api/chats/getChatDetails"
-import { sendMessage } from "../api/messages/sendMessage"
 import { getFriendsList } from "../api/friends/getFriendsList"
 import { getFirendsInvitesList } from "../api/friends/getFriendsInvitesList"
+
+
 
 export const ChatsPage = () =>{
     const navigate = useNavigate()
     const currentURL = window.location.pathname
 
-    const [currentUser, _setCurrentUser] = useAtom(currentUserAtom)
-    const [currentUserChats, setCurrentUserChats] = useAtom(currentUserChatsAtom)
+    const [currentUser, _setCurrentUser] = useAtom(userAtom)
+    const [currentUserChats, setCurrentUserChats] = useAtom(userChatsAtom)
 
     const [currentChatId, setCurrentChatId] = useAtom(currentChatIdAtom)
-    const [currentChatDetails, setCurrentChatDetails] = useAtom(currentChatDetailsAtom)
-    const [currentChatMessages, setCurrentChatMessages] = useAtom(currentChatMessagesAtom)
+    const [_currentChatDetails, setCurrentChatDetails] = useAtom(currentChatDetailsAtom)
+    const [_currentChatMessages, setCurrentChatMessages] = useAtom(currentChatMessagesAtom)
     const [_currentUserFriendsInviteList, setCurrentUserFriendsInviteList] = useAtom(currentUserFriendsInviteListAtom)
     const [_currentUserFriendsList, setCurrentUserFriendsList] = useAtom(currentUserFriendsListAtom)
-
     const [newChatModal, setNewChatModal] = useState(false)
-    const [chatSettingsModal, setChatSettingsModal] = useState(false)
+    
 
     const fetchUserChats = async () =>{
         if(currentUser == null) return;
@@ -98,33 +100,6 @@ export const ChatsPage = () =>{
         }
     }
 
-    const sendNewMessage:SendMessageCallback = async (newMessage) =>{
-        console.log(newMessage)
-
-        if((currentChatDetails == null) || (currentUser == null)) return;
-
-        const resoult = await sendMessage({
-            chatId: currentChatDetails.id,
-            userId: currentUser.id,
-            message: newMessage
-        })
-
-        if(resoult.status){
-            setCurrentChatMessages([
-                ...currentChatMessages,
-                resoult.data
-            ])
-            setCurrentUserChats(
-                currentUserChats.map(e=> e.id == currentChatId ? {...e, 
-                    lastMessage: resoult.data.message, 
-                    lastMessageNickname: currentChatDetails.chatMembers.filter(ee=>ee.userId == currentUser.id)[0].nickname,
-                    name: currentChatDetails.name
-                } : e)
-            )
-        }
-
-    }
-
     const onSelectChat:SelectChatCallback = (chatId) =>{
         if(currentChatId == chatId) return;
         setCurrentChatId(chatId);
@@ -139,14 +114,16 @@ export const ChatsPage = () =>{
             navigate("/");
             return;
         }
+        // fetchUserChats()
         fetchUserChats()
         fetchUserFreindsList()
         fetchUserFriendInviteList()
     }, [])
-
+    
     useEffect(()=>{
         if(currentChatId == null) return;
-
+        // fetchUserChats()
+        fetchUserChats()
         fetchCurrentChatDetails()
         fetchCurrentChatMessages()
     },[currentChatId])
@@ -168,11 +145,11 @@ export const ChatsPage = () =>{
             
         </div>
         <div className="flex flex-col h-full grow">
-            <TmessagesContainer messages={currentChatMessages} /*avatarUrl={currentChat?.avatarUrl}*/ chatName={currentChatDetails?.name} sendMessageCallback={sendNewMessage} clickChatSettingsCallback={()=>setChatSettingsModal(true)}/>
+            <TmessagesContainer />
         </div>
 
         <TnewChatModal isOpen={newChatModal} closeCallback={()=>setNewChatModal(false)}/>
-        <TchatSettingsModal isOpen={chatSettingsModal} closeCallback={()=>setChatSettingsModal(false)}/>
+        
     </div>
     
     </>)

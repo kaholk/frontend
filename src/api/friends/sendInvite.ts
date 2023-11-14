@@ -1,6 +1,6 @@
 
 
-import { apiCall, ApiCallType, RequestStatusHook } from "../axios"
+import { apiCall, ApiCallType, RequestStatusHookType } from "../axios"
 import { Friend } from "../types"
 
 
@@ -12,7 +12,7 @@ export type SendInvitePayload = {
 }
 
 
-export type SendInviteRequestResponseError = {
+export type SendInviteRequestError = {
     message: {
         friendId: string
     }
@@ -25,6 +25,6 @@ export const initialSendInvitePayload:SendInvitePayload = {
 
 
 
-export const sendInvite = async (payload: SendInvitePayload = initialSendInvitePayload, requestStatusHook?: RequestStatusHook) =>{
-    return apiCall<SendInvitePayload, Friend[], SendInviteRequestResponseError>(ApiCallType.POST, "/friend/invite", payload, requestStatusHook)
+export const sendInvite = async (payload: SendInvitePayload = initialSendInvitePayload, requestStatusHook?: RequestStatusHookType) =>{
+    return apiCall<SendInvitePayload, Friend[], SendInviteRequestError>(ApiCallType.POST, "/friend/invite", payload, requestStatusHook)
 }

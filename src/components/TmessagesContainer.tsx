@@ -1,6 +1,5 @@
 
 
-import { TmessageProps, Tmessage } from './Tmessage'
 
 import { Virtuoso, VirtuosoHandle, Components } from 'react-virtuoso'
 
@@ -8,31 +7,23 @@ import { Icon } from "@mdi/react"
 import { mdiDotsVertical, mdiSend, mdiArrowDown } from "@mdi/js"
 
 import { useEffect, useRef, useState } from "react"
+import { useAtom } from "jotai"
+import { currentChatDetailsAtom, currentChatIdAtom, currentChatMessagesAtom, userAtom, userChatsAtom } from '../stores/currentUserAtoms'
+import { sendMessage } from '../api/messages/sendMessage'
+import { Tmessage } from './Tmessage'
+import { TchatSettingsModal } from './TchatSettingsModal'
+
 
 export type SendMessageCallback =  (message: string) => void
-
-export type TmessagesContainerProps = {
-    messages?: TmessageProps[];
-    chatName?: string;
-    avatarUrl?: string;
-    sendMessageCallback?: SendMessageCallback
-    clickChatSettingsCallback?: () => void
-}
 
 
 const VirtuosoCustomHeader:Components['Header'] = () =>{
     return(<>
-    <span className="loading loading-spinner loading-md m-auto block"/>
+        <span className="loading loading-spinner loading-md m-auto block"/>
     </>)
 }
 
-export const TmessagesContainer = ({
-        messages = [],
-        chatName = "",
-        avatarUrl = "",
-        sendMessageCallback = () => {},
-        clickChatSettingsCallback = () =>{},
-    }:TmessagesContainerProps) =>{
+export const TmessagesContainer = () => {
 
     const [newMessage, setNewMessage] = useState("")
     const [atBottom, setAtBottom] = useState(false)
@@ -41,9 +32,16 @@ export const TmessagesContainer = ({
     const showScrollButtonTimeOut = useRef<number|null>(null)
     
 
+    const [currentChatDetails, setCurrentChatDetails] = useAtom(currentChatDetailsAtom)
+    const [currentChatMessages, setCurrentChatMessages] = useAtom(currentChatMessagesAtom)
+    const [currentUser, setCurrentUser] = useAtom(userAtom)
+    const [currentUserChats, setCurrentUserChats] = useAtom(userChatsAtom)
+    const [currentChatId, setCurrentChatId] = useAtom(currentChatIdAtom)
+    const [chatSettingsModal, setChatSettingsModal] = useState(false)
+
     const scollToBotton = () =>{
         if (virtuosoRef.current == null) return;
-        virtuosoRef.current.scrollToIndex({ index: messages.length - 1, behavior: 'smooth' })
+        virtuosoRef.current.scrollToIndex({ index: currentChatMessages.length - 1, behavior: 'smooth' })
         setShowScrollButton(false)
     }
 
@@ -60,14 +58,34 @@ export const TmessagesContainer = ({
 
     useEffect(()=>{
         if (virtuosoRef.current == null) return;
-        virtuosoRef.current.scrollToIndex({ index: messages.length - 1, behavior: 'auto' })
+        virtuosoRef.current.scrollToIndex({ index: currentChatMessages.length - 1, behavior: 'auto' })
         setShowScrollButton(false)
-    },[messages])
+    },[currentChatMessages])
     
-    const onSendButtonPress = () =>{
-        sendMessageCallback(newMessage);
+    const onSendButtonPress = async () =>{
+        if((currentChatDetails == null) || (currentUser == null)) return;
+
+        const resoult = await sendMessage({
+            chatId: currentChatDetails.id,
+            userId: currentUser.id,
+            message: newMessage
+        })
+
+        if(resoult.status){
+            setCurrentChatMessages([
+                ...currentChatMessages,
+                resoult.data
+            ])
+            setCurrentUserChats(
+                currentUserChats.map(e=> e.id == currentChatId ? {...e, 
+                    lastMessage: resoult.data.message, 
+                    lastMessageNickname: currentChatDetails.chatMembers.filter(ee=>ee.userId == currentUser.id)[0].nickname,
+                    name: currentChatDetails.name
+                } : e)
+            )
+        }
+
         setNewMessage("");
-        // scollToBotton()
     }
 
     return(<>
@@ -76,19 +94,19 @@ export const TmessagesContainer = ({
             <div className='flex flex-row'>
                 <div className="avatar self-start">
                     <div className="w-12 rounded-full">
-                        <img src={avatarUrl} />
+                        <img src={""} />
                     </div>
                 </div>
                 <div className='flex flex-col ml-4'>
                     <div className='text-lg'>
-                        {chatName}
+                        {currentChatDetails?.name}
                     </div>
                     <div className='text-xs'>
                         Online
                     </div>
                 </div>
             </div>
-            <div className="dropdown dropdown-end" onClick={clickChatSettingsCallback}>
+            <div className="dropdown dropdown-end" onClick={()=>setChatSettingsModal(true)}>
                 <label tabIndex={0} className="btn btn-ghost btn-circle">
                     <Icon path={mdiDotsVertical} size={1}/>
                 </label>
@@ -98,9 +116,9 @@ export const TmessagesContainer = ({
         <div className='grow relative'>
             <Virtuoso
                 className='no-scrollbar'
-                totalCount={messages.length}
-                data={messages}
-                // initialTopMostItemIndex={messages.length-1}
+                totalCount={currentChatMessages.length}
+                data={currentChatMessages}
+                // initialTopMostItemIndex={currentChatMessages.length-1}
                 atBottomStateChange={(bottom)=>{
                     setAtBottom(bottom)
                 }}
@@ -112,11 +130,11 @@ export const TmessagesContainer = ({
                 itemContent={(_idx, m) => 
                     <Tmessage 
                         message={m.message} 
-                        avatarUrl={m.avatarUrl} 
-                        messageDirection={m.messageDirection} 
-                        messageStatus={m.messageStatus} 
-                        owner={m.owner}  
-                        sendDate={m.sendDate}
+                        // avatarUrl={""} 
+                        // messageDirection={m.messageDirection} 
+                        // messageStatus={m.messageStatus} 
+                        // owner={m.owner}  
+                        // sendDate={m.sendDate}
                     />
                 }
             />
@@ -132,7 +150,7 @@ export const TmessagesContainer = ({
         <div className='flex flex-row'>
             <input 
                 type="text" 
-                placeholder="Type here" 
+                placeholder="Wpisz wiadomość" 
                 className="input input-bordered input-primary w-full mr-5" 
                 value={newMessage} 
                 onChange={(e) => setNewMessage(e.target.value)}
@@ -142,6 +160,8 @@ export const TmessagesContainer = ({
                 <Icon path={mdiSend} size={1} rotate={-20}/>
             </button>
         </div>
+
+        <TchatSettingsModal isOpen={chatSettingsModal} closeCallback={()=>setChatSettingsModal(false)}/>
     </div>
     </>)
 }

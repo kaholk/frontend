@@ -1,5 +1,5 @@
 
-import { apiCall, ApiCallType, RequestStatusHook} from "../axios"
+import { apiCall, ApiCallType, RequestStatusHookType} from "../axios"
 import { User } from "../types"
 
 
@@ -11,7 +11,7 @@ export type RegisterPayload = {
     lastName: string;
 }
 
-export type RegisterRequestResponseError = {
+export type RegisterRequestError = {
     message: {
         email?: string;
         firstName?: string;
@@ -20,7 +20,7 @@ export type RegisterRequestResponseError = {
     }
 }
 
-export const initialRegisterRequestResponseError: RegisterRequestResponseError = {
+export const initialRegisterRequestResponseError: RegisterRequestError = {
     message:{
         email: "",
         firstName: "",
@@ -37,6 +37,6 @@ export const initialRegisterPayload:RegisterPayload = {
     password: ""
 } 
 
-export const registerUser = async (payload: RegisterPayload = initialRegisterPayload, requestStatusHook?: RequestStatusHook) =>{
-    return apiCall<RegisterPayload, User, RegisterRequestResponseError>(ApiCallType.POST, "/user", payload, requestStatusHook)
+export const registerUser = async (payload: RegisterPayload = initialRegisterPayload, requestStatusHook?: RequestStatusHookType) =>{
+    return apiCall<RegisterPayload, User, RegisterRequestError>(ApiCallType.POST, "/user", payload, requestStatusHook)
 }

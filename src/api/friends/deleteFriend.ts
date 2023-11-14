@@ -1,6 +1,6 @@
 
 
-import { apiCall, ApiCallType, RequestStatusHook } from "../axios"
+import { apiCall, ApiCallType, RequestStatusHookType } from "../axios"
 import { Friend } from "../types"
 
 
@@ -10,7 +10,7 @@ export type DeleteFriendPayload = {
     friendId: number
 }
 
-export type DeleteFriendRequestResponseError = {
+export type DeleteFriendRequestError = {
 
 }
 
@@ -20,6 +20,6 @@ export const initialDeleteFriendPayload:DeleteFriendPayload = {
 }
 
 
-export const deleteFriend = async (payload: DeleteFriendPayload = initialDeleteFriendPayload, requestStatusHook?: RequestStatusHook) =>{
-    return apiCall<DeleteFriendPayload, unknown, DeleteFriendRequestResponseError>(ApiCallType.DELETE, "/chat/delMember", payload, requestStatusHook)
+export const deleteFriend = async (payload: DeleteFriendPayload = initialDeleteFriendPayload, requestStatusHook?: RequestStatusHookType) =>{
+    return apiCall<DeleteFriendPayload, unknown, DeleteFriendRequestError>(ApiCallType.DELETE, "/chat/delMember", payload, requestStatusHook)
 }

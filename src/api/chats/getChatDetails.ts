@@ -1,13 +1,13 @@
 
 
-import { apiCall, ApiCallType, RequestStatusHook } from "../axios"
+import { apiCall, ApiCallType, RequestStatusHookType } from "../axios"
 import { ChatDetail } from "../types"
 
 export type ChatDetailsPayload = {
     id: number
 }
 
-export type ChatDetailsRequestResponseError = string
+export type ChatDetailsRequestError = string
 
 /*Initial Values*/
 export const initalChatDetailsPayload:ChatDetailsPayload = {
@@ -15,7 +15,7 @@ export const initalChatDetailsPayload:ChatDetailsPayload = {
 }
 
 
-export const getChatDetails = async (payload: ChatDetailsPayload = initalChatDetailsPayload, requestStatusHook?: RequestStatusHook) =>{
+export const getChatDetails = async (payload: ChatDetailsPayload = initalChatDetailsPayload, requestStatusHook?: RequestStatusHookType) =>{
     const url = `/chat/details/${payload.id}`
-    return apiCall<undefined, ChatDetail, ChatDetailsRequestResponseError>(ApiCallType.GET, url, undefined, requestStatusHook)
+    return apiCall<undefined, ChatDetail, ChatDetailsRequestError>(ApiCallType.GET, url, undefined, requestStatusHook)
 }

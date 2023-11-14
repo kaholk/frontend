@@ -1,5 +1,5 @@
 
-import { RequestStatusHook, apiCall, ApiCallType } from "../axios"
+import { RequestStatusHookType, apiCall, ApiCallType } from "../axios"
 import { User } from "../types"
 
 /*Types*/
@@ -7,7 +7,7 @@ export type UserDetailsPayload = {
     id: number
 }
 
-export type UserDetailsRequestResponseError = string
+export type UserDetailsRequestError = string
 
 /*Initial Values*/
 export const initalUserDetailsPayload:UserDetailsPayload = {
@@ -16,7 +16,7 @@ export const initalUserDetailsPayload:UserDetailsPayload = {
 
 
 
-export const getUserDetails = async (userDetailsPayload: UserDetailsPayload = initalUserDetailsPayload, requestStatusHook?: RequestStatusHook) =>{
+export const getUserDetails = async (userDetailsPayload: UserDetailsPayload = initalUserDetailsPayload, requestStatusHook?: RequestStatusHookType) =>{
     const url = `/user/${userDetailsPayload.id}`
-    return apiCall<undefined, User, UserDetailsRequestResponseError>(ApiCallType.GET, url, undefined, requestStatusHook)
+    return apiCall<undefined, User, UserDetailsRequestError>(ApiCallType.GET, url, undefined, requestStatusHook)
 }

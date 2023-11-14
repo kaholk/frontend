@@ -1,6 +1,6 @@
 
 
-import { apiCall, ApiCallType, RequestStatusHook } from "../axios"
+import { apiCall, ApiCallType, RequestStatusHookType } from "../axios"
 
 
 /*Types*/
@@ -9,7 +9,7 @@ export type UpdateUserPasswordPayload = {
     password: string
 }
 
-export type UpdateUserPasswordRequestResponseError = {
+export type UpdateUserPasswordRequestError = {
     password?: string
 }
 
@@ -25,7 +25,7 @@ const initialUpdateUserPasswordPayload:UpdateUserPasswordPayload = {
 }
 
 
-export const updateUserPassword = async (payload: UpdateUserPasswordPayload = initialUpdateUserPasswordPayload, requestStatusHook?: RequestStatusHook) =>{
-    return apiCall<UpdateUserPasswordPayload, UpdateUserPasswordResponse, UpdateUserPasswordRequestResponseError>(ApiCallType.PATCH, "/user/changePassword", payload, requestStatusHook)
+export const updateUserPassword = async (payload: UpdateUserPasswordPayload = initialUpdateUserPasswordPayload, requestStatusHook?: RequestStatusHookType) =>{
+    return apiCall<UpdateUserPasswordPayload, UpdateUserPasswordResponse, UpdateUserPasswordRequestError>(ApiCallType.PATCH, "/user/changePassword", payload, requestStatusHook)
 }
 
