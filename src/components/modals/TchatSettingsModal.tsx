@@ -1,6 +1,7 @@
 
 /*vvvvvvvvvv react*/
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 /*^^^^^^^^^^ react*/
 
 /*vvvvvvvvvv jotai*/
@@ -36,6 +37,9 @@ export type TchatSettingsModalParams = {
 // chat settings modal
 export const TchatSettingsModal = ({isOpen = true, closeCallback = () => {}}:TchatSettingsModalParams) =>{
     
+    // navigate method, used to redirect
+    const navigate = useNavigate();
+
     // store variables
     const [currentChatId, _setCurrentChatId] = useAtom(currentChatIdAtom);
     const [currentChatDetails, setCurrentChatDetails] = useAtom(currentChatDetailsAtom);
@@ -311,19 +315,24 @@ export const TchatSettingsModal = ({isOpen = true, closeCallback = () => {}}:Tch
                 <div className="divider" />
                 <div>
                     <h4 className="font-bold text-md">Dodaj znajomych do czatu</h4>
-                    <div className="ml-8">
-                        {
-                        firendsListCanAddToChat.map(friend=>
-                        <div key={friend.friendId}>
-                            <span>{friend.firstName} {friend.lastName} ({friend.friendId})</span>
-                            <button className={`btn btn-sm btn-outline btn-primary ml-2 ${addChatMemberStatus == RequestStatus.Pending && "btn-disabled"}`} onClick={()=>fetchAddChatMember(friend.friendId)}>
-                                {(addChatMemberStatus == RequestStatus.Pending && friend.friendId == addChatMemberId) && <span className="loading loading-spinner"/>}
-                                Dodaj do czatu
-                            </button>
-                            {(addChatMemberStatus == RequestStatus.Error && friend.friendId == addChatMemberId) && <span className="text-error">{addChatMemberError?.baseError}</span>}
+                    {
+                        firendsListCanAddToChat.length == 0
+                        ? <span className="text-primary cursor-pointer" onClick={()=>{closeCallback(); navigate("/friends");}}>Zaproś więcej znajomych</span>
+                        :
+                        <div className="ml-8">
+                            {
+                            firendsListCanAddToChat.map(friend=>
+                            <div key={friend.friendId}>
+                                <span>{friend.firstName} {friend.lastName} ({friend.friendId})</span>
+                                <button className={`btn btn-sm btn-outline btn-primary ml-2 ${addChatMemberStatus == RequestStatus.Pending && "btn-disabled"}`} onClick={()=>fetchAddChatMember(friend.friendId)}>
+                                    {(addChatMemberStatus == RequestStatus.Pending && friend.friendId == addChatMemberId) && <span className="loading loading-spinner"/>}
+                                    Dodaj do czatu
+                                </button>
+                                {(addChatMemberStatus == RequestStatus.Error && friend.friendId == addChatMemberId) && <span className="text-error">{addChatMemberError?.baseError}</span>}
+                            </div>
+                            )}
                         </div>
-                        )}
-                    </div>
+                    }
                 </div>
                 <div className="divider" />
                 <button className="btn btn-sm btn-outline btn-primary ml-2" onClick={()=>fetchDeleteChat()}>Usuń czat</button>
