@@ -8,13 +8,10 @@ import { useState } from "react";
 import { useAtom } from "jotai"
 /*^^^^^^^^^^ jotai*/
 
-/*vvvvvvvvvv api types*/
+/*vvvvvvvvvv api*/
 import { RequestStatus, RequestResponseError } from "../api/axios"
-/*^^^^^^^^^^ api types*/
-
-/*vvvvvvvvvv api calls*/
 import { userLogin, LoginPayload, initialLoginPayload, LoginRequestError } from "./../api/user/loginUser"
-/*^^^^^^^^^^ api calls*/
+/*^^^^^^^^^^ api*/
 
 /*vvvvvvvvvv import store*/
 import { 

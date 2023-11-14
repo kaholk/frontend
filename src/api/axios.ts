@@ -2,11 +2,13 @@
 import axios from "axios"
 import React from "react"
 
+// create axios instance
 export const api = axios.create({
     baseURL: "https://chat-api.srym.pl",
     timeout: 1000 * 10
 })
 
+// possible request statuses
 export enum RequestStatus {
     Idle = "Idle",
     Pending = "Pending",
@@ -14,6 +16,7 @@ export enum RequestStatus {
     Success = "Success"
 }
 
+// possible request api call types
 export enum ApiCallType {
     GET = "GET",
     POST = "POST",
@@ -21,14 +24,16 @@ export enum ApiCallType {
     PATCH = "PATCH"
 }
 
+// request status hook used to update request status
 export type RequestStatusHookType = React.Dispatch<React.SetStateAction<RequestStatus>> | undefined
 
-
+// request response error type used in api calls
 export type RequestResponseError<RequuestResponseErrorType> = {
     error: RequuestResponseErrorType | null
     baseError: string | null
 } | null
 
+// request response type used in api calls
 export type RequestResponse<ResponseType, RequuestResponseErrorType> = 
 {
     status: false,
@@ -43,18 +48,29 @@ export type RequestResponse<ResponseType, RequuestResponseErrorType> =
 
 export const apiCall = async <PayloadType, ResponseType, RequestResponseErrorType> (callType: ApiCallType, url:string, payload?:PayloadType, requestStatusHook?: RequestStatusHookType) =>{
 
-    if(requestStatusHook != undefined) requestStatusHook(RequestStatus.Pending)
+    // update request status if possible
+    if(requestStatusHook != undefined) requestStatusHook(RequestStatus.Pending);
+
     try{
-        const resoult = await api<ResponseType>({method: callType, url: url, data: payload})
-        if(requestStatusHook != undefined) requestStatusHook(RequestStatus.Success)
+
+        // try make request
+        const resoult = await api<ResponseType>({method: callType, url: url, data: payload});
+
+        // update request status if possible
+        if(requestStatusHook != undefined) requestStatusHook(RequestStatus.Success);
         
+        // if request success
         return {
             status: true,
             data: resoult.data
         } as RequestResponse<ResponseType, RequestResponseErrorType>
     }
     catch(error: any){
-        if(requestStatusHook != undefined) requestStatusHook(RequestStatus.Error)
+
+        // update request status if possible
+        if(requestStatusHook != undefined) requestStatusHook(RequestStatus.Error);
+
+        // if request fail, but serwer return response
         if (error.response){
             return {
                 status: false,
@@ -64,6 +80,8 @@ export const apiCall = async <PayloadType, ResponseType, RequestResponseErrorTyp
                 }
             } as RequestResponse<ResponseType, RequestResponseErrorType>
         }
+
+        // else if request fail and serwer not return response
         else{
             return {
                 status: false,

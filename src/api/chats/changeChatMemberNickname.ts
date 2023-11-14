@@ -11,7 +11,9 @@ export type ChangeChatMemberNicknamePayload = {
 
 
 export type ChangeChatMemberNicknameRequestError = {
-
+    message: {
+        nickname: string
+    }
 }
 
 export const initialChangeChatMemberNicknamePayload: ChangeChatMemberNicknamePayload = {

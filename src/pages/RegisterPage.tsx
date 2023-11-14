@@ -4,13 +4,10 @@ import { useNavigate } from "react-router-dom"
 import { useState } from "react";
 /*^^^^^^^^^^ react*/
 
-/*vvvvvvvvvv api types*/
+/*vvvvvvvvvv api*/
 import { RequestStatus, RequestResponseError } from "../api/axios"
-/*^^^^^^^^^^ api types*/
-
-/*vvvvvvvvvv api calls*/
 import { registerUser, RegisterRequestError, RegisterPayload, initialRegisterPayload} from "../api/user/registerUser"
-/*^^^^^^^^^^ api calls*/
+/*^^^^^^^^^^ api*/
 
 // registerPage page component
 export const RegisterPage = () =>{
@@ -42,6 +39,8 @@ export const RegisterPage = () =>{
 
         // try register user
         const resoult = await registerUser(registerPayload, setRegisterStatus);
+
+        // if error while downloading data
         if(resoult.status == false){
             setRegisterResponeError(resoult.data);
             return;
