@@ -1,5 +1,5 @@
 
-import { Tnavigation } from "../components/Tnavigation"
+import { Tnavigation } from "../components/other/Tnavigation"
 
 
 

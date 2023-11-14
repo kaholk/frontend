@@ -7,17 +7,17 @@ import {
     currentChatDetailsAtom, 
     currentUserFriendsListAtom,
     currentChatIdAtom
-} from "../stores/currentUserAtoms"
+} from "../../stores/currentUserAtoms"
 
-import { ChatMember } from "../api/types"
+import { ChatMember } from "../../api/types"
 
-import { RequestStatus } from "../api/axios"
+import { RequestStatus } from "../../api/axios"
 
-import { deleteChat } from "../api/chats/deleteChat"
-import { addChatMember } from "../api/chats/addChatMember"
-import { deleteChatMember } from "../api/chats/deleteChatMember"
-import { changeChatName } from "../api/chats/changeChatName"
-import { changeChatMemberNickname } from "../api/chats/changeChatMemberNickname"
+import { deleteChat } from "../../api/chats/deleteChat"
+import { addChatMember } from "../../api/chats/addChatMember"
+import { deleteChatMember } from "../../api/chats/deleteChatMember"
+import { changeChatName } from "../../api/chats/changeChatName"
+import { changeChatMemberNickname } from "../../api/chats/changeChatMemberNickname"
 
 
 export type TchatSettingsModalParams = {

@@ -5,14 +5,14 @@ import { Icon } from "@mdi/react"
 import { mdiMagnify } from "@mdi/js"
 import { useAtom } from "jotai"
 import { useState } from "react";
-import { searchUsers } from "../api/user/searchUser"
-import { User } from "../api/types"
-import { RequestStatus } from "../api/axios"
+import { searchUsers } from "../../api/user/searchUser"
+import { User } from "../../api/types"
+import { RequestStatus } from "../../api/axios"
 
 import { 
     currentUserFriendsInviteListAtom,
     currentUserFriendsListAtom
-} from "../stores/currentUserAtoms"
+} from "../../stores/currentUserAtoms"
 
 export const TfriendsContainer = () =>{
     const [currentUserFriendsInviteList, _setCurrentUserFriendsInviteList] = useAtom(currentUserFriendsInviteListAtom)

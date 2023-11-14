@@ -8,10 +8,10 @@ import { mdiDotsVertical, mdiSend, mdiArrowDown } from "@mdi/js"
 
 import { useEffect, useRef, useState } from "react"
 import { useAtom } from "jotai"
-import { currentChatDetailsAtom, currentChatIdAtom, currentChatMessagesAtom, userAtom, userChatsAtom } from '../stores/currentUserAtoms'
-import { sendMessage } from '../api/messages/sendMessage'
-import { Tmessage } from './Tmessage'
-import { TchatSettingsModal } from './TchatSettingsModal'
+import { currentChatDetailsAtom, currentChatIdAtom, currentChatMessagesAtom, userAtom, userChatsAtom } from '../../stores/currentUserAtoms'
+import { sendMessage } from '../../api/messages/sendMessage'
+import { Tmessage } from '../other/Tmessage'
+import { TchatSettingsModal } from '../modals/TchatSettingsModal'
 
 
 export type SendMessageCallback =  (message: string) => void

@@ -1,11 +1,14 @@
 
 
-import { Tchat, TchatOnClickCallback } from "./Tchat"
+import { Tchat, TchatOnClickCallback } from "../other/Tchat"
 import { Components, Virtuoso, ItemProps } from 'react-virtuoso'
 import { Icon } from "@mdi/react"
 import { mdiMagnify, mdiPlus } from "@mdi/js"
 import React, { useState } from "react"
-import { Chat } from "../api/types"
+import { Chat } from "../../api/types"
+import { TnewChatModal } from "../modals/TnewChatModal"
+import { currentChatIdAtom, userChatsAtom } from "../../stores/currentUserAtoms"
+import { useAtom } from "jotai"
 
 
 
@@ -13,13 +16,6 @@ export type CreateNewChatCallback = () => void
 export type SelectChatCallback = TchatOnClickCallback
 export type SearchCallback = (value: string) => void
 
-export type TchatContainerProps = {
-    chats: Chat[];
-    currentChatId?: number;
-    createNewChatCallback?: CreateNewChatCallback;
-    selectChatCallback?: SelectChatCallback;
-    searchCallback?: SearchCallback;
-}
 
 type VirtuosoContext = {
     context?: {currentChatId: number}
@@ -38,19 +34,20 @@ const customItem: Components<Chat, VirtuosoContext["context"]>['Item'] = React.f
     )
 })
 
-export const TchatContainer = ({
-        chats,
-        createNewChatCallback = () => {},
-        selectChatCallback = () => {},
-        searchCallback = () => {},
-        currentChatId = -1
-    }:TchatContainerProps) =>{
-    
+export const TchatContainer = () =>{
     const [searchValue, setSearchValue] = useState("")
+    const [newChatModal, setNewChatModal] = useState(false)
+    const [currentChatId, setCurrentChatId] = useAtom(currentChatIdAtom)
+    const [currentUserChats, setCurrentUserChats] = useAtom(userChatsAtom)
 
     const catchSearchCallback = (value: string) => {
         setSearchValue(value)
-        searchCallback(value)
+        // searchCallback(value)
+    }
+
+    const onSelectChat = (chatId: number) =>{
+        if(currentChatId == chatId) return;
+        setCurrentChatId(chatId);
     }
 
     return(<>
@@ -73,10 +70,10 @@ export const TchatContainer = ({
         <div className="relative bg-base-200 rounded-xl grow">
             <Virtuoso 
                 className='no-scrollbar'
-                totalCount={chats.length}
-                data={chats}
+                totalCount={currentUserChats.length}
+                data={currentUserChats}
                 components={{Item: customItem}}
-                context={{currentChatId: currentChatId}}
+                context={{currentChatId: currentChatId ?? -1}}
                 itemContent={(idx, chat) => (<>
                     <Tchat 
                         id={chat.id} 
@@ -84,15 +81,17 @@ export const TchatContainer = ({
                         desc={chat.lastMessage} 
                         avatarUrl={""} 
                         status={""} 
-                        onClickCallback={selectChatCallback}
+                        onClickCallback={onSelectChat}
                     />
-                    { idx < chats.length-1 ? <div className="divider m-0"/> : null }
+                    { idx < currentUserChats.length-1 && <div className="divider m-0"/> }
                 </>)}
             />
-            <button className="btn btn-primary rounded-xl absolute right-6 bottom-5" onClick={createNewChatCallback}>
+            <button className="btn btn-primary rounded-xl absolute right-6 bottom-5" onClick={()=>setNewChatModal(true)}>
                 <Icon path={mdiPlus} size={1}/>
             </button>
         </div>
+        
+        <TnewChatModal isOpen={newChatModal} closeCallback={()=>setNewChatModal(false)}/>
     </div>
     </>)
 }

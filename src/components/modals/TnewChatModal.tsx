@@ -5,9 +5,9 @@
 import { useState } from "react";
 import { useAtom } from "jotai";
 
-import { userChatsAtom, userAtom, currentUserFriendsListAtom } from "../stores/currentUserAtoms";
-import { RequestStatus, RequestResponseErrorType } from "../api/axios";
-import { CreateChatPayload, createChat, CreateChatRequestError, initialCreateChatPayload} from "../api/chats/createChat"
+import { userChatsAtom, userAtom, currentUserFriendsListAtom } from "../../stores/currentUserAtoms";
+import { RequestStatus, RequestResponseError } from "../../api/axios";
+import { CreateChatPayload, createChat, CreateChatRequestError, initialCreateChatPayload} from "../../api/chats/createChat"
 
 
 export type TnewChatModalParams = {
@@ -28,7 +28,7 @@ export const TnewChatModal = ({
 
 
     const [createChatStatus, setUpdateChatNameStatus] = useState<RequestStatus>(RequestStatus.Idle)
-    const [createChatError, setCreateChatError] = useState<RequestResponseErrorType<CreateChatRequestError>>(null)
+    const [createChatError, setCreateChatError] = useState<RequestResponseError<CreateChatRequestError>>(null)
 
     const createNewChat = async () =>{
         if(currentUser == null) return;
@@ -53,7 +53,7 @@ export const TnewChatModal = ({
             setCurrentUserChats([...currentUserChats, resoult.data])
         }
         else{
-            setCreateChatError(resoult.responseError)
+            setCreateChatError(resoult.data)
         }
     }
 
@@ -68,7 +68,7 @@ export const TnewChatModal = ({
                 newChatPayload.chatMembers.length > 1 && 
                 <>
                     <input type="text" placeholder="chat name" className="input input-bordered input-primary w-full" onInput={(e)=> setNewChatPayload({...newChatPayload, name: e.currentTarget.value})} />
-                    <span className="text-error">{createChatError?.message.name}</span>
+                    <span className="text-error">{createChatError?.error?.message.name}</span>
                 </>
             }
             </div>
@@ -76,7 +76,7 @@ export const TnewChatModal = ({
             <div>
                 <div>
                     <p>Chat members</p>
-                    <p className="text-error">{createChatError?.message.chatMembers}</p>
+                    <p className="text-error">{createChatError?.error?.message.chatMembers}</p>
                 </div>
                 {currentUser?.firstName} {currentUser?.lastName} (Ty)
                 {

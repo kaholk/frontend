@@ -1,12 +1,12 @@
 
 
 /*components*/
-import { TmessagesContainer, SendMessageCallback } from "../components/TmessagesContainer"
-import { TchatContainer, SelectChatCallback, SearchCallback } from "../components/TchatContainer"
-import { Tnavigation } from "../components/Tnavigation"
-import { TfriendsContainer } from "../components/TfriendsContainer"
-import { TchatSettingsModal } from "../components/TchatSettingsModal"
-import { TnewChatModal } from "../components/TnewChatModal"
+import { TmessagesContainer, SendMessageCallback } from "../components/containers/TmessagesContainer"
+import { TchatContainer, SelectChatCallback, SearchCallback } from "../components/containers/TchatContainer"
+import { Tnavigation } from "../components/other/Tnavigation"
+import { TfriendsContainer } from "../components/containers/TfriendsContainer"
+import { TchatSettingsModal } from "../components/modals/TchatSettingsModal"
+import { TnewChatModal } from "../components/modals/TnewChatModal"
 
 import { useNavigate } from "react-router-dom"
 import { useEffect, useState } from "react";
@@ -46,9 +46,7 @@ export const ChatsPage = () =>{
     const [_currentChatMessages, setCurrentChatMessages] = useAtom(currentChatMessagesAtom)
     const [_currentUserFriendsInviteList, setCurrentUserFriendsInviteList] = useAtom(currentUserFriendsInviteListAtom)
     const [_currentUserFriendsList, setCurrentUserFriendsList] = useAtom(currentUserFriendsListAtom)
-    const [newChatModal, setNewChatModal] = useState(false)
     
-
     const fetchUserChats = async () =>{
         if(currentUser == null) return;
         const resoult = await getUserChats({id: currentUser.id})
@@ -57,7 +55,7 @@ export const ChatsPage = () =>{
             return;
         }
         setCurrentUserChats(resoult.data)
-        if(resoult.data.length > 0)
+        if(resoult.data.length > 0 && currentChatId == null)
             setCurrentChatId(resoult.data[0].id)
     }
 
@@ -100,21 +98,11 @@ export const ChatsPage = () =>{
         }
     }
 
-    const onSelectChat:SelectChatCallback = (chatId) =>{
-        if(currentChatId == chatId) return;
-        setCurrentChatId(chatId);
-    }
-
-    const searchChats:SearchCallback = (value) =>{
-        console.log(value)
-    }
-
     useEffect(()=>{
         if(currentUser == null){
             navigate("/");
             return;
         }
-        // fetchUserChats()
         fetchUserChats()
         fetchUserFreindsList()
         fetchUserFriendInviteList()
@@ -122,7 +110,6 @@ export const ChatsPage = () =>{
     
     useEffect(()=>{
         if(currentChatId == null) return;
-        // fetchUserChats()
         fetchUserChats()
         fetchCurrentChatDetails()
         fetchCurrentChatMessages()
@@ -134,22 +121,12 @@ export const ChatsPage = () =>{
         <div className="flex flex-col h-full w-1/3 mr-4">
             <Tnavigation/>
             <br />
-            {
-                currentURL == "/chats" &&
-                <TchatContainer chats={currentUserChats} currentChatId={0} createNewChatCallback={()=>setNewChatModal(true)} selectChatCallback={onSelectChat} searchCallback={searchChats}/>
-            }
-            {
-                currentURL == "/friends" &&
-                <TfriendsContainer />
-            }
-            
+            { currentURL == "/chats" && <TchatContainer /> }
+            { currentURL == "/friends" && <TfriendsContainer />}
         </div>
         <div className="flex flex-col h-full grow">
             <TmessagesContainer />
         </div>
-
-        <TnewChatModal isOpen={newChatModal} closeCallback={()=>setNewChatModal(false)}/>
-        
     </div>
     
     </>)
