@@ -1,28 +1,38 @@
 
+/*vvvvvvvvvv react*/
+import React, { useState } from "react"
+/*^^^^^^^^^^ react*/
 
-import { Tchat, TchatOnClickCallback } from "../other/Tchat"
-import { Components, Virtuoso, ItemProps } from 'react-virtuoso'
+/*vvvvvvvvvv jotai*/
+import { useAtom } from "jotai"
+/*^^^^^^^^^^ jotai*/
+
+/*vvvvvvvvvv icons*/
 import { Icon } from "@mdi/react"
 import { mdiMagnify, mdiPlus } from "@mdi/js"
-import React, { useState } from "react"
-import { Chat } from "../../api/types"
-import { TnewChatModal } from "../modals/TnewChatModal"
+/*^^^^^^^^^^ icons*/
+
+/*vvvvvvvvvv store*/
 import { currentChatIdAtom, userChatsAtom } from "../../stores/currentUserAtoms"
-import { useAtom } from "jotai"
+/*^^^^^^^^^^ store*/
+
+/*vvvvvvvvvv api*/
+import { Chat } from "../../api/types"
+/*^^^^^^^^^^ api*/
+
+/*vvvvvvvvvv components*/
+import { Tchat } from "../other/Tchat"
+import { Components, Virtuoso, ItemProps } from 'react-virtuoso'
+import { TnewChatModal } from "../modals/TnewChatModal"
+/*^^^^^^^^^^ components*/
 
 
-
-export type CreateNewChatCallback = () => void
-export type SelectChatCallback = TchatOnClickCallback
-export type SearchCallback = (value: string) => void
-
-
+// custm Virtuoso Context used to set custom item
 type VirtuosoContext = {
     context?: {currentChatId: number}
 }
 
-
-
+/*vvvvvvvvvv virtuoso custom item to add custom class*/
 const customItem: Components<Chat, VirtuosoContext["context"]>['Item'] = React.forwardRef<HTMLDivElement, ItemProps<Chat> & VirtuosoContext>(({item, context, ...props} , ref) =>  {
     return (
         <div 
@@ -33,25 +43,24 @@ const customItem: Components<Chat, VirtuosoContext["context"]>['Item'] = React.f
         />
     )
 })
+/*^^^^^^^^^^ virtuoso custom item to add custom class*/
 
 export const TchatContainer = () =>{
-    const [searchValue, setSearchValue] = useState("")
-    const [newChatModal, setNewChatModal] = useState(false)
-    const [currentChatId, setCurrentChatId] = useAtom(currentChatIdAtom)
-    const [currentUserChats, setCurrentUserChats] = useAtom(userChatsAtom)
 
+    // store variables
+    const [currentChatId, setCurrentChatId] = useAtom(currentChatIdAtom)
+    const [currentUserChats, _setCurrentUserChats] = useAtom(userChatsAtom)
+    
+    // new chat modal open status
+    const [newChatModal, setNewChatModal] = useState(false)
+
+    const [searchValue, setSearchValue] = useState("")
     const catchSearchCallback = (value: string) => {
         setSearchValue(value)
-        // searchCallback(value)
     }
 
-    const onSelectChat = (chatId: number) =>{
-        if(currentChatId == chatId) return;
-        setCurrentChatId(chatId);
-    }
 
-    return(<>
-     
+    return(
     <div className="flex flex-col grow">
         <div className="relative text-gray-600 focus-within:text-gray-400 mb-6">
             <span className="absolute inset-y-0 left-0 flex items-center pl-2">
@@ -81,7 +90,7 @@ export const TchatContainer = () =>{
                         desc={chat.lastMessage} 
                         avatarUrl={""} 
                         status={""} 
-                        onClickCallback={onSelectChat}
+                        onClickCallback={()=>setCurrentChatId(chat.id)}
                     />
                     { idx < currentUserChats.length-1 && <div className="divider m-0"/> }
                 </>)}
@@ -93,5 +102,5 @@ export const TchatContainer = () =>{
         
         <TnewChatModal isOpen={newChatModal} closeCallback={()=>setNewChatModal(false)}/>
     </div>
-    </>)
+    )
 }
