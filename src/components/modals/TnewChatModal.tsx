@@ -67,13 +67,26 @@ export const TnewChatModal = ({
             return;
         }
 
+        // chat name to update chatlist
+        let chatName = ""
+
+        // if chat is not multichat
+        if(newChatPayload.chatMembers.length == 1){
+            const friend = currentUserFriendsList.filter(firend=> firend.friendId == newChatPayload.chatMembers[0])[0];
+            chatName = `${friend.firstName}${friend.lastName}`;
+        }
+        else{
+            chatName = newChatPayload.name ?? "";
+        }
+        
         // update values
         setCurrentUserChats([...currentUserChats, {
             id: resoult.data.id,
             lastMessage: "",
             lastMessageNickname: "",
-            name: `${currentUser.firstName} ${currentUser.lastName}`
+            name: chatName
         }]);
+        setNewChatPayload(initialCreateChatPayload);
         setCurrentChatId(resoult.data.id)
         closeCallback();
     }

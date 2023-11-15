@@ -6,11 +6,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { MainLayout } from "./layouts/MainLayout"
 import { HomePage } from "./pages/HomePage"
 import { NotFoundPAge } from "./pages/NotFoundPage"
-import { HelpersPage } from './pages/HelpersPage';
 import { ChatsPage } from './pages/ChatsPage'
 import { RegisterPage } from "./pages/RegisterPage"
-
-import { TestPage } from './pages/TestPage'
 
 import { DevTools } from 'jotai-devtools';
 
@@ -25,7 +22,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <Routes>
           <Route path='/' element={ <MainLayout/> }>
             <Route index element={ <HomePage/> } />
-            <Route path='helpers' element={ <HelpersPage/> } />
             <Route path='chats' element={ <ChatsPage/> } />
             <Route path='friends' element={ <ChatsPage/> } />
             <Route path='settings' element={ <ChatsPage/> } />
