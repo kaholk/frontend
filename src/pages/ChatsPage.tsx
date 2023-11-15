@@ -22,6 +22,7 @@ import {
     // variables
     userAtom, 
     currentChatIdAtom,
+    currentChatDetailsAtom,
 
     // methods
     fetchUserChats,
@@ -44,6 +45,7 @@ export const ChatsPage = () =>{
     // store variables
     const [currentUser, _setCurrentUser] = useAtom(userAtom)
     const [currentChatId, _setCurrentChatId] = useAtom(currentChatIdAtom)
+    const [_chatDetials, setChatDetials] = useAtom(currentChatDetailsAtom)
 
     // download user chats, friends and invites on first render
     useEffect(()=>{
@@ -51,18 +53,20 @@ export const ChatsPage = () =>{
             navigate("/");
             return;
         }
-        fetchUserChats()
-        fetchFriendsList()
-        fetchFriendsInviteList()
+        fetchUserChats();
+        fetchFriendsList();
+        fetchFriendsInviteList();
     }, [])
     
     // download user chats, chat details and chats messages when chat id has changed
     useEffect(()=>{
-        if(currentChatId == null) 
+        if(currentChatId == null){
+            setChatDetials(null);
             return;
-        fetchUserChats()
-        fetchCurrentChatDetails()
-        fetchCurrentChatMessages()
+        }
+        fetchUserChats();
+        fetchCurrentChatDetails();
+        fetchCurrentChatMessages();
     },[currentChatId])
 
 

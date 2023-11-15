@@ -17,15 +17,16 @@ import { changeChatName, ChangeChatNameRequestError } from "../../api/chats/chan
 import { changeChatMemberNickname, ChangeChatMemberNicknameRequestError } from "../../api/chats/changeChatMemberNickname"
 /*vvvvvvvvvv api*/
 
-/*vvvvvvvvvv import store*/
+/*vvvvvvvvvv store*/
 import { 
     // variables
     currentChatDetailsAtom, 
     friendsListAtom,
     currentChatIdAtom,
     userAtom,
+    userChatsAtom,
 } from "../../stores/currentUserAtoms"
-/*^^^^^^^^^^ import store*/
+/*^^^^^^^^^^ store*/
 
 // modal params
 export type TchatSettingsModalParams = {
@@ -37,10 +38,11 @@ export type TchatSettingsModalParams = {
 export const TchatSettingsModal = ({isOpen = true, closeCallback = () => {}}:TchatSettingsModalParams) =>{
     
     // store variables
-    const [currentChatId, _setCurrentChatId] = useAtom(currentChatIdAtom);
+    const [currentChatId, setCurrentChatId] = useAtom(currentChatIdAtom);
     const [currentChatDetails, setCurrentChatDetails] = useAtom(currentChatDetailsAtom);
     const [friendsList, _setFriendsList] = useAtom(friendsListAtom);
     const [currentUser, _setCurrentUser] = useAtom(userAtom);
+    const [userChats, setUserChats] = useAtom(userChatsAtom);
     
     /*vvvvvvvvvv variables and methods used to track and trigger a request to delete chat*/
     const [deleteChatStatus, setDeleteChatStatus] = useState<RequestStatus>(RequestStatus.Idle);
@@ -66,6 +68,11 @@ export const TchatSettingsModal = ({isOpen = true, closeCallback = () => {}}:Tch
             setDeleteChatError(resoult.data);
             return;
         }
+        
+        setUserChats(userChats.filter(chat=>chat.id != currentChatId));
+        setCurrentChatId(null);
+        closeCallback();
+
     }
     /*^^^^^^^^^^  variables and methods used to track and trigger a request to delete chat*/
 
@@ -123,10 +130,10 @@ export const TchatSettingsModal = ({isOpen = true, closeCallback = () => {}}:Tch
         // initialize values
         setDeleteChatMemberId(userId);
 
-        // if user is not login
+        // if no chat is selected
         if(currentChatId == null){
             setDeleteChatMemberStatus(RequestStatus.Error);
-            setDeleteChatMemberError({baseError: "użytkwnik nie jest zalogowany", error: null});
+            setDeleteChatMemberError({baseError: "nie wybrano czatu", error: null});
             return;
         }
 
@@ -171,6 +178,13 @@ export const TchatSettingsModal = ({isOpen = true, closeCallback = () => {}}:Tch
             return;
         }
 
+        // if chat is not multichat
+        if(currentChatDetails?.multichat == false){
+            setUpdateChatNameStatus(RequestStatus.Error);
+            setUpdateChatNameError({baseError: "nie można zmienić nazwy czatu, ponieważ nie jest to multichat", error: null});
+            return;
+        }
+
         // try to update chat name
         const resoult = await changeChatName({chatId: currentChatId, name: newChatName}, setUpdateChatNameStatus);
 
@@ -180,7 +194,7 @@ export const TchatSettingsModal = ({isOpen = true, closeCallback = () => {}}:Tch
             return;
         }
 
-
+        
         setCurrentChatDetails(resoult.data)
         setNewChatName("");
     }
@@ -286,8 +300,8 @@ export const TchatSettingsModal = ({isOpen = true, closeCallback = () => {}}:Tch
             <div>
                 <h4 className="font-bold text-md">Członkowie czatu</h4>
                 <div className="ml-8">
-                    {currentChatDetails?.chatMembers.map(chatMember=><>
-                    <div className="my-1">
+                    {currentChatDetails?.chatMembers.map(chatMember=>
+                    <div className="my-1" key={chatMember.userId}>
                         <span>{chatMember.nickname} ({chatMember.userId})</span>
                         {
                             chatMember.userId == currentUser?.id 
@@ -306,7 +320,7 @@ export const TchatSettingsModal = ({isOpen = true, closeCallback = () => {}}:Tch
                             </>
                         }
                     </div>
-                    </>)}
+                    )}
                 </div>
                 <div className="divider" />
                 <div>
@@ -326,7 +340,10 @@ export const TchatSettingsModal = ({isOpen = true, closeCallback = () => {}}:Tch
                     </div>
                 </div>
                 <div className="divider" />
-                <button className="btn btn-sm btn-outline btn-primary ml-2" onClick={()=>fetchDeleteChat()}>Usuń czat</button>
+                <button className={`btn btn-sm btn-outline btn-primary ml-2 ${deleteChatStatus == RequestStatus.Pending && "btn-disabled"}`} onClick={()=>fetchDeleteChat()}>
+                    {(deleteChatStatus == RequestStatus.Pending) && <span className="loading loading-spinner"/>}
+                    Usuń czat
+                </button>
                 <span className="text-error">{deleteChatError?.baseError}</span>
             </div>
         </div>

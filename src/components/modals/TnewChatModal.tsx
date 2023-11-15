@@ -1,67 +1,90 @@
 
 
+/*vvvvvvvvvv react*/
+import { useState } from "react"
+/*^^^^^^^^^^ react*/
 
+/*vvvvvvvvvv jotai*/
+import { useAtom } from "jotai"
+/*^^^^^^^^^^ jotai*/
 
-import { useState } from "react";
-import { useAtom } from "jotai";
-
-import { userChatsAtom, userAtom, friendsListAtom } from "../../stores/currentUserAtoms";
+/*vvvvvvvvvv api*/
 import { RequestStatus, RequestResponseError } from "../../api/axios";
 import { CreateChatPayload, createChat, CreateChatRequestError, initialCreateChatPayload} from "../../api/chats/createChat"
+/*vvvvvvvvvv api*/
 
+/*vvvvvvvvvv store*/
+import { userChatsAtom, userAtom, friendsListAtom, currentChatIdAtom } from "../../stores/currentUserAtoms";
+/*^^^^^^^^^^ store*/
 
+// modal params
 export type TnewChatModalParams = {
     isOpen: boolean;
     closeCallback?: () => void
 }
 
+// new chat modal
 export const TnewChatModal = ({
     isOpen=false,
     closeCallback = () => {}
 }:TnewChatModalParams) =>{
 
-    const [currentUser, _setCurrentUser] = useAtom(userAtom)
-    const [currentUserFriendsList, setCurrentUserFriendsList] = useAtom(friendsListAtom)
-    const [currentUserChats, setCurrentUserChats] = useAtom(userChatsAtom)
+    // store variables
+    const [currentUser, _setCurrentUser] = useAtom(userAtom);
+    const [currentUserFriendsList, _setCurrentUserFriendsList] = useAtom(friendsListAtom);
+    const [currentUserChats, setCurrentUserChats] = useAtom(userChatsAtom);
+    const [_currentChatId, setCurrentChatId] = useAtom(currentChatIdAtom);
     
-    const [newChatPayload, setNewChatPayload] = useState<CreateChatPayload>(initialCreateChatPayload)
-
-
-    const [createChatStatus, setUpdateChatNameStatus] = useState<RequestStatus>(RequestStatus.Idle)
-    const [createChatError, setCreateChatError] = useState<RequestResponseError<CreateChatRequestError>>(null)
-
+    /*vvvvvvvvvv variables and methods used to track and trigger a request to create new chat*/
+    const [newChatPayload, setNewChatPayload] = useState<CreateChatPayload>(initialCreateChatPayload);
+    const [createChatStatus, setUpdateChatNameStatus] = useState<RequestStatus>(RequestStatus.Idle);
+    const [createChatError, setCreateChatError] = useState<RequestResponseError<CreateChatRequestError>>(null);
     const createNewChat = async () =>{
-        if(currentUser == null) return;
-        setCreateChatError(null)
 
+        // reset values
+        setUpdateChatNameStatus(RequestStatus.Idle);
+        setCreateChatError(null);
 
-        if(newChatPayload.name == ""){
-            setNewChatPayload(current => {
-                const {name, ...rest} = current
-                return rest
-            })
+        // if user is not login
+        if(currentUser == null){
+            setUpdateChatNameStatus(RequestStatus.Error);
+            setCreateChatError({baseError: "użytkwnik nie jest zalogowany", error: null});
+            return;
         }
 
+        // create payload to create new chat
         const payload = {
-            ...newChatPayload,
+            ...(newChatPayload.name != "" && {name: newChatPayload.name}),
             chatMembers: [...newChatPayload.chatMembers, currentUser.id]
+        };
+
+        // try to create new chat
+        const resoult = await createChat(payload, setUpdateChatNameStatus);
+
+        // if error while creating new chat
+        if(resoult.status == false){
+            setCreateChatError(resoult.data);
+            return;
         }
 
-        const resoult = await createChat(payload, setUpdateChatNameStatus)
-
-        if(resoult.status){
-            setCurrentUserChats([...currentUserChats, resoult.data])
-        }
-        else{
-            setCreateChatError(resoult.data)
-        }
+        // update values
+        setCurrentUserChats([...currentUserChats, {
+            id: resoult.data.id,
+            lastMessage: "",
+            lastMessageNickname: "",
+            name: `${currentUser.firstName} ${currentUser.lastName}`
+        }]);
+        setCurrentChatId(resoult.data.id)
+        closeCallback();
     }
+    /*^^^^^^^^^^ variables and methods used to track and trigger a request to create new chat*/
+
 
     return(
     <dialog className={`modal ${isOpen ? "modal-open" : "" }`}>
         <div className="modal-box w-11/12 max-w-3xl">
-            <button className="btn btn-md btn-circle btn-ghost absolute right-2 top-2" onClick={() => closeCallback()}>X</button>
-            <h3 className="font-bold text-lg">Create New Chat!</h3>
+            <button className={`btn btn-md btn-circle btn-ghost absolute right-2 top-2 ${createChatStatus == RequestStatus.Pending && "btn-disabled"}`} onClick={() => closeCallback()}>X</button>
+            <h3 className="font-bold text-lg">Utwórz nowy Chat!</h3>
             <div className="divider" />
             <div>
             {
@@ -69,10 +92,10 @@ export const TnewChatModal = ({
                 <>
                     <input type="text" placeholder="chat name" className="input input-bordered input-primary w-full" onInput={(e)=> setNewChatPayload({...newChatPayload, name: e.currentTarget.value})} />
                     <span className="text-error">{createChatError?.error?.message.name}</span>
+                    <div className="divider" />
                 </>
             }
             </div>
-            <div className="divider" />
             <div>
                 <div>
                     <p>Chat members</p>
@@ -89,7 +112,7 @@ export const TnewChatModal = ({
             </div>
             <div className="divider" />
             <div>
-                <p>Users</p>
+                <p>Dodaj znojomych do czatu</p>
                 {currentUserFriendsList.filter(e=> newChatPayload.chatMembers.every(ee=>ee != e.friendId)).map(firend=>
                     <div key={firend.friendId}>
                         {firend.firstName} {firend.lastName} ({firend.friendId})
