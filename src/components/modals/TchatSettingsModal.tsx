@@ -94,7 +94,7 @@ export const TchatSettingsModal = ({isOpen = true, closeCallback = () => {}}:Tch
         // initialize values
         setAddChatMemberId(userId);
 
-        // if user is not login
+        // if no chat is selected
         if(currentChatId == null){
             setAddChatMemberStatus(RequestStatus.Error);
             setAddChatMemberError({baseError: "użytkwnik nie jest zalogowany", error: null});
@@ -254,18 +254,20 @@ export const TchatSettingsModal = ({isOpen = true, closeCallback = () => {}}:Tch
         setCurrentChatDetails({
             ...currentChatDetails,
             chatMembers: resoult.data
-        })
-        setSelectedChatMember(resoult.data.filter(e=>e.userId == selectedChatMember.userId)[0])
+        });
+
+        setSelectedChatMember(resoult.data.filter(e=>e.userId == selectedChatMember.userId)[0]);
+        setChangeNickNameModal(false);
     }
     const initializeChangeNickname = async (userId: number) =>{
         if(currentChatDetails == null) return;
-        setNewNickName("")
+        setNewNickName("");
         setSelectedChatMember(currentChatDetails.chatMembers.filter(e=>e.userId == userId)[0])
         setChangeNickNameModal(true);
     }
     /*^^^^^^^^^ variables and methods used to track and trigger a request to update chat member nickname*/
 
-    // chat modal close diabled
+    // chat modal close button diabled
     const chatModalDisabled = (
         (deleteChatStatus == RequestStatus.Pending) ||
         (addChatMemberStatus == RequestStatus.Pending) ||

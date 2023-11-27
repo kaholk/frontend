@@ -36,10 +36,10 @@ export type ChatDetail = {
 }
 
 export type Message = {
-    id: number,
-    chatId: number,
-    userId: number,
-    message: string,
-    messageTypeId: number,
-    createdAt: string
+    id: number;
+    chatId: number;
+    userId: number;
+    message: string;
+    messageTypeId: number;
+    createdAt: string;
 }

@@ -20,6 +20,6 @@ export const initialRejectInvitePayload: RejectInvitePayload = {
     userId: 0
 }
 
-export const RejectInvite = async (payload: RejectInvitePayload = initialRejectInvitePayload, requestStatusHook?: RequestStatusHookType) =>{
+export const rejectInvite = async (payload: RejectInvitePayload = initialRejectInvitePayload, requestStatusHook?: RequestStatusHookType) =>{
     return apiCall<RejectInvitePayload, Friend, RejectInviteRequestError>(ApiCallType.POST, "friend/Reject", payload, requestStatusHook)
 }
