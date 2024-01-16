@@ -5,7 +5,7 @@ import { atom, getDefaultStore } from 'jotai'
 /*^^^^^^^^^^ jotai*/
 
 /*vvvvvvvvvv api types*/
-import { User, Chat, ChatDetail, Message, Friend } from "../api/types"
+import { User, Chat, ChatDetail, Message, Friend, OnlineUser } from "../api/types"
 import { RequestStatus, RequestResponseError } from "../api/axios"
 /*^^^^^^^^^^ api types*/
 
@@ -208,13 +208,13 @@ export const fetchFriendsInviteList = async () =>{
 
     // if error while downloading data
     if(resoult.status == false){
-        store.set(friendsInviteListErrorAtom, resoult.data)
+        store.set(friendsInviteListErrorAtom, resoult.data);
         return;
     }
 
     // set downloaded data
-    store.set(friendsInviteListAtom, resoult.data)
+    store.set(friendsInviteListAtom, resoult.data);
 }
 /*^^^^^^^^^^ current user invites list*/
 
-
+export const onlineUsersAtom = atom<OnlineUser[]>([]);

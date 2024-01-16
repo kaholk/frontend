@@ -13,6 +13,8 @@ import { sendMessage } from '../../api/messages/sendMessage'
 import { Tmessage } from '../other/Tmessage'
 import { TchatSettingsModal } from '../modals/TchatSettingsModal'
 
+import { socket } from "../../api/socket"
+
 
 export type SendMessageCallback =  (message: string) => void
 
@@ -72,6 +74,7 @@ export const TmessagesContainer = () => {
         })
 
         if(resoult.status){
+            socket.emit("sendMessage", resoult.data);
             setCurrentChatMessages([
                 ...currentChatMessages,
                 resoult.data

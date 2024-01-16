@@ -33,6 +33,9 @@ import {
 } from "../stores/currentUserAtoms"
 /*^^^^^^^^^^ import store*/
 
+import { socket } from "../api/socket"
+
+
 // chats page component
 export const ChatsPage = () =>{
     
@@ -56,6 +59,39 @@ export const ChatsPage = () =>{
         fetchUserChats();
         fetchFriendsList();
         fetchFriendsInviteList();
+
+        // login to socket
+        socket.emit("addNewUser", currentUser.id);
+
+        // aktualnie zalogowani uzytkownicy
+        // socket.on("getOnlineUsers", (onlineUsers:any) => {
+        //     console.log("onlineUsers", onlineUsers);
+        // });
+
+
+        // odbior wiadomosci
+        // socket.on("getMessage", (message:any) => {
+        //     console.log(message);
+        // });
+
+
+        // wyslanie wiadomosci
+        // socket.emit("sendMessage", {
+        //     chatId: 55,
+        //     userId: 8,
+        //     message: "sobol jebie",
+        //     messageTypeId: 1
+        // });
+
+        // export type Message = {
+        //     // id: number;
+        //     chatId: number;
+        //     userId: number;
+        //     message: string;
+        //     messageTypeId: number;
+        //     // createdAt: string;
+        // }
+
     }, [])
     
     // download user chats, chat details and chats messages when chat id has changed
